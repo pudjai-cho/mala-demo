@@ -9,6 +9,7 @@ import {
 
 const props = defineProps<{
   category: IngredientCategory
+  compact?: boolean
 }>()
 
 const { cnScript, showPinyin, showThai, showEnglish } = useI18nContext()
@@ -32,8 +33,11 @@ const extras = computed(() =>
         <span v-if="showPinyin" class="text-xs font-semibold text-chili">
           {{ category.pinyin }}
         </span>
+        <span v-if="compact && extras" class="text-[11px] font-medium text-ink-muted">
+          · {{ extras }}
+        </span>
       </div>
-      <div v-if="extras" class="mt-0.5 text-[11px] font-medium text-ink-muted">
+      <div v-if="!compact && extras" class="mt-0.5 text-[11px] font-medium text-ink-muted">
         {{ extras }}
       </div>
     </div>

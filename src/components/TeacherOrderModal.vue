@@ -2,29 +2,22 @@
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import CategorySectionHeader from '@/components/ui/CategorySectionHeader.vue'
 import LangLabel from '@/components/ui/LangLabel.vue'
-import QtyStepper from '@/components/ui/QtyStepper.vue'
 import { useI18nContext } from '@/composables/useI18n'
 import {
-  CATEGORIES,
-  INGREDIENTS,
-  formatCategoryExtras,
-  formatHanziPair,
+  INGREDIENT_MAP,
+  getCategorySectionGridClass,
+  getCategorySectionWrapperClass,
   getIngredientCategorySections,
 } from '@/data/ingredients'
 import { UI_TEXT } from '@/data/uiText'
-import type { CategoryId, OrderItem, OrderMode } from '@/types/game'
-
-const props = defineProps<{
-  initialMode: OrderMode
-}>()
+import type { Ingredient, OrderItem } from '@/types/game'
 
 const emit = defineEmits<{
   close: []
-  apply: [items: OrderItem[], mode: OrderMode]
+  apply: [items: OrderItem[]]
 }>()
 
 const {
-  cnScript,
   showPinyin,
   showThai,
   showEnglish,
@@ -38,8 +31,6 @@ const {
 } = useI18nContext()
 
 const selectedMap = ref<Record<string, number>>({})
-const chosenMode = ref<OrderMode>(props.initialMode)
-const activeCategory = ref<CategoryId | 'all'>('all')
 
 const selectedItems = computed<OrderItem[]>(() =>
   Object.entries(selectedMap.value)
@@ -47,24 +38,21 @@ const selectedItems = computed<OrderItem[]>(() =>
     .map(([ingredientId, quantity]) => ({ ingredientId, quantity }))
 )
 
-const previewTotal = computed(() =>
-  selectedItems.value.reduce((sum, item) => {
-    const ing = INGREDIENTS.find((i) => i.id === item.ingredientId)
-    return sum + (ing ? ing.price * item.quantity : 0)
-  }, 0)
+const selectedDetails = computed<Array<{ item: OrderItem; ing: Ingredient }>>(() =>
+  selectedItems.value.flatMap((item) => {
+    const ing = INGREDIENT_MAP[item.ingredientId]
+    return ing ? [{ item, ing }] : []
+  })
 )
 
-const categorySections = computed(() => getIngredientCategorySections(activeCategory.value))
+const previewTotal = computed(() =>
+  selectedDetails.value.reduce((sum, { item, ing }) => sum + ing.price * item.quantity, 0)
+)
 
-function categorySelectedCount(catId: CategoryId): number {
-  return INGREDIENTS.reduce(
-    (count, ing) => count + (ing.category === catId && (selectedMap.value[ing.id] ?? 0) > 0 ? 1 : 0),
-    0
-  )
-}
+const categorySections = computed(() => getIngredientCategorySections('all'))
 
-function catExtras(cat: (typeof CATEGORIES)[number]): string {
-  return formatCategoryExtras(cat, showThai.value, showEnglish.value)
+function getSelectedQty(id: string): number {
+  return selectedMap.value[id] ?? 0
 }
 
 function adjust(id: string, delta: number) {
@@ -78,15 +66,9 @@ function adjust(id: string, delta: number) {
   }
 }
 
-function handleCardClick(id: string) {
-  if ((selectedMap.value[id] ?? 0) === 0) {
-    adjust(id, 1)
-  }
-}
-
 function handleConfirm() {
   if (selectedItems.value.length === 0) return
-  emit('apply', selectedItems.value, chosenMode.value)
+  emit('apply', selectedItems.value)
   selectedMap.value = {}
 }
 
@@ -100,35 +82,35 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
 
 <template>
   <div
-    class="fixed inset-0 z-50 grid place-items-center bg-[#22150e]/55 p-3 backdrop-blur-[2px] sm:p-5"
+    class="fixed inset-0 z-50 grid place-items-center bg-[#22150e]/55 p-2 backdrop-blur-[2px] sm:p-4"
     role="dialog"
     aria-modal="true"
     @click.self="emit('close')"
   >
     <div
-      class="flex max-h-[90vh] w-full max-w-[840px] flex-col overflow-hidden rounded-3xl border-2 border-border-warm bg-surface shadow-2xl"
+      class="flex max-h-[92vh] w-full max-w-[860px] flex-col overflow-hidden rounded-3xl border-2 border-border-warm bg-surface shadow-2xl"
     >
       <!-- Pinned Header -->
-      <div class="flex shrink-0 items-start justify-between gap-3 border-b border-border-warm bg-surface px-5 pt-4.5 pb-3.5">
-        <div class="flex min-w-0 items-start gap-3">
+      <div class="flex shrink-0 items-center justify-between gap-3 border-b border-border-warm bg-surface px-4 py-2.5">
+        <div class="flex min-w-0 items-center gap-2.5">
           <div
-            class="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-border-warm bg-gradient-to-br from-rose-50 to-orange-100 text-2xl dark:from-rose-950/60 dark:to-orange-950/60"
+            class="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-border-warm bg-gradient-to-br from-rose-50 to-orange-100 text-xl dark:from-rose-950/60 dark:to-orange-950/60"
           >
             👩‍🏫
           </div>
           <div class="min-w-0">
-            <h2 class="m-0 text-lg font-extrabold leading-tight text-ink">
+            <h2 class="m-0 text-base font-extrabold leading-tight text-ink">
               <LangLabel
                 :entry="UI_TEXT.teacherModalTitle"
-                pinyin-class="mt-0.5 text-xs font-semibold text-chili"
-                sub-class="mt-0.5 text-xs font-semibold text-ink-muted"
+                pinyin-class="mt-0.5 text-[11px] font-semibold text-chili"
+                sub-class="mt-0.5 text-[11px] font-semibold text-ink-muted"
               />
             </h2>
-            <p class="mt-1 text-xs leading-snug text-ink-muted sm:text-sm">
+            <p class="mt-0.5 text-[11px] leading-snug text-ink-muted sm:text-xs">
               <LangLabel
                 :entry="UI_TEXT.teacherModalDesc"
-                pinyin-class="mt-0.5 text-xs font-semibold text-chili"
-                sub-class="mt-0.5 text-xs font-normal text-ink-muted"
+                pinyin-class="mt-0.5 text-[11px] font-semibold text-chili"
+                sub-class="mt-0.5 text-[11px] font-normal text-ink-muted"
               />
             </p>
           </div>
@@ -136,7 +118,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
 
         <button
           type="button"
-          class="grid h-9 w-9 shrink-0 cursor-pointer place-items-center rounded-xl bg-cream-soft font-extrabold text-ink transition hover:bg-orange-100 dark:hover:bg-white/10"
+          class="grid h-8 w-8 shrink-0 cursor-pointer place-items-center rounded-xl bg-cream-soft font-extrabold text-ink transition hover:bg-orange-100 dark:hover:bg-white/10"
           aria-label="Close modal"
           @click="emit('close')"
         >
@@ -144,188 +126,88 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
         </button>
       </div>
 
-      <!-- Pinned Controls: Mode & Category Filter -->
-      <div class="flex shrink-0 flex-col gap-3 border-b border-border-warm bg-surface-alt px-5 py-3">
-        <!-- Mode after starting -->
-        <div class="flex flex-col gap-1.5">
-          <div class="text-xs font-extrabold text-ink">
-            <LangLabel
-              :entry="UI_TEXT.teacherModalMode"
-              pinyin-class="mt-0.5 text-[11px] font-semibold text-chili"
-              sub-class="mt-0.5 text-[11px] font-medium text-ink-muted"
-            />
-          </div>
-
-          <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
-            <button
-              v-for="opt in [
-                { value: 'listening' as const, icon: '👂', label: UI_TEXT.modeListening },
-                { value: 'reading' as const, icon: '👀', label: UI_TEXT.modeReading },
-              ]"
-              :key="opt.value"
-              type="button"
-              class="flex cursor-pointer items-center gap-2.5 rounded-xl border-[1.5px] px-3 py-2 text-left transition"
-              :class="
-                chosenMode === opt.value
-                  ? 'border-chili bg-surface text-chili shadow-sm'
-                  : 'border-border-warm bg-surface/70 text-ink-muted hover:bg-surface hover:text-ink'
-              "
-              @click="chosenMode = opt.value"
-            >
-              <span
-                class="grid h-4 w-4 shrink-0 place-items-center rounded-full border-[1.5px]"
-                :class="chosenMode === opt.value ? 'border-chili bg-chili' : 'border-ink-muted/40 bg-surface'"
-              >
-                <span v-if="chosenMode === opt.value" class="h-1.5 w-1.5 rounded-full bg-white" />
-              </span>
-              <span class="text-lg leading-none">{{ opt.icon }}</span>
-              <LangLabel
-                :entry="opt.label"
-                main-class="text-sm font-extrabold"
-                pinyin-class="mt-0.5 text-[11px] font-semibold text-chili"
-                sub-class="mt-0.5 text-[11px] font-medium opacity-80"
-              />
-            </button>
-          </div>
-        </div>
-
-        <!-- Category Filter Pills -->
-        <div class="flex flex-wrap items-center gap-1.5">
-          <button
-            type="button"
-            class="cursor-pointer rounded-xl border-[1.5px] px-3 py-1 text-left transition"
-            :class="
-              activeCategory === 'all'
-                ? 'border-chili bg-chili text-white'
-                : 'border-border-warm bg-surface text-ink-muted hover:bg-cream-soft'
-            "
-            @click="activeCategory = 'all'"
-          >
-            <LangLabel
-              :entry="UI_TEXT.allCategories"
-              main-class="text-xs font-bold"
-              :pinyin-class="
-                activeCategory === 'all'
-                  ? 'mt-0.5 text-[10px] font-semibold text-amber-100'
-                  : 'mt-0.5 text-[10px] font-semibold text-chili'
-              "
-              sub-class="mt-0.5 text-[10px] font-medium opacity-85"
-            />
-          </button>
-
-          <button
-            v-for="cat in CATEGORIES"
-            :key="cat.id"
-            type="button"
-            class="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border-[1.5px] px-3 py-1 text-left transition"
-            :class="
-              activeCategory === cat.id
-                ? 'border-chili bg-chili text-white'
-                : 'border-border-warm bg-surface text-ink-muted hover:bg-cream-soft'
-            "
-            @click="activeCategory = cat.id"
-          >
-            <div class="leading-tight">
-              <div class="text-xs font-bold">
-                {{ formatHanziPair(cat.hanzi, cat.hanziTrad, cnScript) }}
-              </div>
-              <div
-                v-if="showPinyin"
-                class="mt-0.5 text-[10px] font-semibold"
-                :class="activeCategory === cat.id ? 'text-amber-100' : 'text-chili'"
-              >
-                {{ cat.pinyin }}
-              </div>
-              <div v-if="catExtras(cat)" class="mt-0.5 text-[10px] font-medium opacity-85">
-                {{ catExtras(cat) }}
-              </div>
-            </div>
-            <span
-              v-if="categorySelectedCount(cat.id) > 0"
-              class="rounded-full px-1.5 py-0.5 text-[10px] leading-none font-black"
-              :class="
-                activeCategory === cat.id
-                  ? 'bg-white/25 text-white'
-                  : 'bg-rose-100 text-chili dark:bg-rose-950/70'
-              "
-            >
-              {{ numHanzi(categorySelectedCount(cat.id)) }}
-            </span>
-          </button>
-        </div>
-      </div>
-
       <!-- Scrollable Ingredient Sections -->
-      <div class="flex-1 space-y-3.5 overflow-y-auto px-5 py-4">
-        <section
-          v-for="section in categorySections"
-          :key="section.id"
-          class="space-y-2 rounded-2xl border p-3"
-          :class="section.category?.sectionClass"
-        >
-          <CategorySectionHeader v-if="section.category" :category="section.category" />
+      <div class="flex-1 overflow-y-auto px-4 py-2.5">
+        <div class="grid grid-cols-1 gap-2 sm:grid-cols-6 md:grid-cols-8 md:grid-flow-dense">
+          <section
+            v-for="section in categorySections"
+            :key="section.id"
+            class="space-y-1.5 rounded-2xl border p-2"
+            :class="[getCategorySectionWrapperClass(section.items.length), section.category?.sectionClass]"
+          >
+            <CategorySectionHeader v-if="section.category" :category="section.category" compact />
 
-          <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-            <div
-              v-for="ing in section.items"
-              :key="ing.id"
-              class="flex items-center justify-between gap-3 rounded-2xl border-[1.5px] px-3 py-2.5 transition"
-              :class="[
-                (selectedMap[ing.id] ?? 0) > 0
-                  ? 'border-chili bg-surface-active shadow-[0_2px_10px_rgba(230,57,70,0.08)]'
-                  : 'cursor-pointer border-border-warm bg-surface hover:border-broth hover:bg-surface-alt',
-              ]"
-              @click="handleCardClick(ing.id)"
-            >
-              <div class="flex min-w-0 flex-1 items-center gap-3">
+            <div class="grid gap-1.5" :class="getCategorySectionGridClass(section.items.length)">
+              <div
+                v-for="ing in section.items"
+                :key="ing.id"
+                role="button"
+                tabindex="0"
+                class="relative flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 px-1 pt-2 pb-1.5 text-center transition select-none hover:-translate-y-0.5 hover:border-broth hover:shadow-md active:scale-[0.96]"
+                :class="
+                  getSelectedQty(ing.id) > 0
+                    ? 'border-chili bg-surface-active'
+                    : 'border-border-warm bg-surface'
+                "
+                @click="adjust(ing.id, 1)"
+                @keydown.enter.self="adjust(ing.id, 1)"
+                @keydown.space.self.prevent="adjust(ing.id, 1)"
+              >
                 <div
-                  class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl text-2xl"
+                  v-if="getSelectedQty(ing.id) > 0"
+                  class="absolute -top-1.5 -right-1.5 flex items-center overflow-hidden rounded-full bg-chili text-white shadow-md shadow-chili/35"
+                >
+                  <button
+                    type="button"
+                    class="grid h-5.5 w-5.5 cursor-pointer place-items-center bg-black/15 text-xs font-black transition hover:bg-black/30 active:scale-90"
+                    aria-label="Decrease quantity"
+                    title="Remove 1"
+                    @click.stop="adjust(ing.id, -1)"
+                  >
+                    −
+                  </button>
+                  <span class="grid h-5.5 min-w-5 place-items-center px-1 text-[11px] font-extrabold">
+                    {{ numHanzi(getSelectedQty(ing.id)) }}
+                  </span>
+                </div>
+
+                <div
+                  class="mb-0.5 grid h-8 w-8 place-items-center rounded-lg text-lg transition-all"
                   :style="{ backgroundColor: ing.accent }"
                 >
                   {{ ing.emoji }}
                 </div>
 
-                <div class="min-w-0 flex-1 leading-snug">
-                  <div class="flex flex-wrap items-baseline gap-x-1.5">
-                    <span class="text-[15px] font-extrabold text-ink">{{ ingName(ing) }}</span>
-                    <span v-if="showPinyin" class="text-xs font-semibold text-chili">
-                      {{ ingPinyin(ing) }}
-                    </span>
-                  </div>
-                  <div v-if="showThai" class="mt-0.5 text-xs text-ink-muted">
-                    {{ ing.thai }}
-                  </div>
-                  <div v-if="showEnglish" class="text-xs font-medium text-slate-600 dark:text-ink-muted">
-                    {{ ing.english }}
-                  </div>
+                <div class="text-sm font-extrabold leading-tight text-ink">{{ ingName(ing) }}</div>
+                <div v-if="showPinyin" class="text-[10px] font-semibold leading-tight text-chili">
+                  {{ ingPinyin(ing) }}
                 </div>
-              </div>
+                <div v-if="showThai" class="text-[10px] leading-tight text-ink-muted">
+                  {{ ing.thai }}
+                </div>
+                <div v-if="showEnglish" class="text-[10px] font-semibold leading-tight text-gray-600 dark:text-ink-muted">
+                  {{ ing.english }}
+                </div>
 
-              <div class="flex shrink-0 flex-col items-end gap-1.5" @click.stop>
-                <span class="rounded-xl bg-amber-100 px-2 py-0.5 text-right leading-tight text-amber-800 dark:bg-amber-900/50 dark:text-amber-200">
-                  <span class="block text-[11px] font-extrabold">{{ priceHanzi(ing.price) }}</span>
-                  <span v-if="showPinyin" class="block text-[9px] font-semibold text-chili">
+                <div
+                  class="mt-0.5 inline-flex items-baseline gap-1 rounded-lg bg-amber-100 px-1.5 py-0.5 leading-none text-amber-800 dark:bg-amber-900/50 dark:text-amber-200"
+                >
+                  <span class="text-[10px] font-extrabold">{{ priceHanzi(ing.price) }}</span>
+                  <span v-if="showPinyin" class="text-[9px] font-semibold text-chili">
                     {{ pricePinyin(ing.price) }}
                   </span>
-                </span>
-                <QtyStepper
-                  :quantity="selectedMap[ing.id] ?? 0"
-                  :min="0"
-                  :max="9"
-                  @decrement="adjust(ing.id, -1)"
-                  @increment="adjust(ing.id, 1)"
-                />
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </div>
       </div>
 
       <!-- Pinned Footer -->
       <div
-        class="flex shrink-0 flex-col gap-3 border-t border-border-warm bg-surface px-5 py-3.5 sm:flex-row sm:items-center sm:justify-between"
+        class="flex shrink-0 flex-col gap-2.5 border-t border-border-warm bg-surface px-4 py-2.5 sm:flex-row sm:items-center sm:justify-between"
       >
-        <div class="min-w-0 leading-snug">
+        <div class="min-w-0 flex-1 space-y-1.5 leading-snug">
           <LangLabel
             :entry="UI_TEXT.selectedCount"
             :vars="{ count: qtyHanzi(selectedItems.length), total: qtyHanzi(previewTotal) }"
@@ -337,9 +219,50 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
             pinyin-class="mt-0.5 text-[11px] font-semibold text-chili"
             sub-class="mt-0.5 text-xs font-medium text-ink-muted"
           />
+
+          <div
+            v-if="selectedDetails.length > 0"
+            class="flex max-h-[68px] flex-wrap items-center gap-1.5 overflow-y-auto pt-0.5"
+          >
+            <div
+              v-for="{ item, ing } in selectedDetails"
+              :key="item.ingredientId"
+              class="inline-flex items-center gap-1 rounded-xl border border-rose-200 bg-rose-50/90 py-0.5 pr-0.5 pl-1.5 text-xs shadow-2xs dark:border-rose-800/70 dark:bg-rose-950/45"
+            >
+              <span class="text-sm leading-none">{{ ing.emoji }}</span>
+              <span class="font-bold text-ink">{{ ingName(ing) }}</span>
+              <span v-if="showPinyin" class="text-[10px] font-semibold text-chili">
+                {{ ingPinyin(ing) }}
+              </span>
+              <div class="inline-flex items-center overflow-hidden rounded-lg bg-chili text-white">
+                <button
+                  type="button"
+                  class="grid h-5 w-5 cursor-pointer place-items-center bg-black/15 text-[11px] font-black transition hover:bg-black/30 active:scale-90"
+                  aria-label="Decrease quantity"
+                  title="Remove 1"
+                  @click="adjust(item.ingredientId, -1)"
+                >
+                  −
+                </button>
+                <span class="px-1.5 text-[10px] leading-none font-extrabold">
+                  ×{{ numHanzi(item.quantity) }}
+                </span>
+                <button
+                  type="button"
+                  class="grid h-5 w-5 cursor-pointer place-items-center bg-black/15 text-[11px] font-black transition hover:bg-black/30 active:scale-90 disabled:cursor-not-allowed disabled:opacity-40"
+                  :disabled="item.quantity >= 9"
+                  aria-label="Increase quantity"
+                  title="Add 1"
+                  @click="adjust(item.ingredientId, 1)"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="flex flex-wrap items-center justify-end gap-2">
+        <div class="flex shrink-0 flex-wrap items-center justify-end gap-2">
           <button
             type="button"
             class="cursor-pointer rounded-xl border border-border-warm bg-cream-soft px-3.5 py-2 text-left leading-tight text-ink-muted transition hover:bg-orange-100 disabled:cursor-not-allowed disabled:opacity-45 dark:hover:bg-white/10"

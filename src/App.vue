@@ -10,15 +10,15 @@ import TopBar from '@/components/TopBar.vue'
 import TtsWarningBanner from '@/components/TtsWarningBanner.vue'
 import { provideI18n } from '@/composables/useI18n'
 import { useMalaGame } from '@/composables/useMalaGame'
-import type { OrderItem, OrderMode } from '@/types/game'
+import type { OrderItem } from '@/types/game'
 
 const game = useMalaGame()
 provideI18n(game.i18n)
 
 const teacherModalOpen = ref(false)
 
-function handleApplyCustomOrder(items: OrderItem[], mode: OrderMode) {
-  game.applyCustomOrder(items, mode)
+function handleApplyCustomOrder(items: OrderItem[]) {
+  game.applyCustomOrder(items)
   teacherModalOpen.value = false
 }
 </script>
@@ -107,7 +107,6 @@ function handleApplyCustomOrder(items: OrderItem[], mode: OrderMode) {
 
     <TeacherOrderModal
       v-if="teacherModalOpen"
-      :initial-mode="game.orderMode.value"
       @close="teacherModalOpen = false"
       @apply="handleApplyCustomOrder"
     />

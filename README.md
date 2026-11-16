@@ -29,7 +29,7 @@ Cycle how the **Customer Order** and **Order Menu** display information:
 ### 3. Order Modes, Grouping & Teacher Controls
 - **Customer Header Controls (`CustomerTicket.vue`)**:
   - **Order Modes (`👀 看菜單` vs `👂 聽老師說`)**: Switch right beside the customer badge between visible order cards or hidden listening mode (with **`👁️ 偷看小抄` (Peek Note)** to toggle visibility).
-  - **Teacher Sets Order (`👩‍🏫 老師出題`)**: Inline action button in the customer header opening the custom modal to hand-pick specific ingredients, quantities (1–9), and the starting order mode (`listening` or `reading`).
+  - **Teacher Sets Order (`👩‍🏫 老師出題`)**: Inline action button in the customer header opening a compact custom-round builder modal where all 4 grouped ingredient sections are shown at once using clickable cards (click to add up to `9`, inline `[ − | qty ]` badge to subtract) plus a footer summary showing total price and selected-item chips with `[ − | ×qty | + ]` steppers.
 - **Grouped Top Bar Controls (`TopBar.vue`)**:
   - **Random by Difficulty**: Grouped card combining the difficulty selector (`簡單` 2–3, `中等` 3–4, `挑戰` 4–5 items) and `🎲 隨機點餐` button with a short multilingual hint.
   - **Checkout & Math Modes**: Grouped card with a short multilingual hint wrapping the 4 checkout/arithmetic practice modes.
@@ -46,8 +46,8 @@ Cycle how the **Customer Order** and **Order Menu** display information:
 ### 5. Speech (TTS) & Sound Effects
 - **Web Speech API TTS**:
   - Read full customer orders in **Chinese (`zh-CN` / `zh-TW`)**, **Thai (`th-TH`)**, or **English (`en-US`)** using natural Chinese classifiers (e.g. `兩棵白菜`, `一隻蝦`).
-  - Voice selector dropdown for installed Chinese voices (prioritizing Microsoft Natural/Online and Google voices), plus a dismissible warning banner (`TtsWarningBanner.vue`) if no Chinese TTS voice is available.
-  - Optional click-to-speak (`🔊 / 🔇`) on menu items, dedicated `🔊` speaker button per card, clickable Chinese price pills (`兩元`), clickable quantity+classifier badges (`一棵`), and spoken Chinese digits when pressing calculator keys.
+  - Voice selector dropdown for installed Chinese voices (prioritizing Microsoft Natural/Online and Google voices), iOS/iPadOS-friendly synchronous speech interruption, and a dismissible OS-aware warning banner (`TtsWarningBanner.vue`) with tailored guidance for Windows, macOS, iOS/iPadOS, Android, or unsupported browsers when Chinese TTS isn't available.
+  - Optional click-to-speak (`🔊 / 🔇`) on menu items, dedicated `🔊` speaker button per card, clickable ingredient names and quantity+classifier badges (`蓮藕`, `肆片`) on customer order chips, clickable Chinese price pills (`兩元`), and spoken Chinese digits when pressing calculator keys.
 - **Web Audio API Chimes**: Synthesized success, partial-match, and try-again feedback tones (`sfx.ts`) with zero external audio assets.
 
 ---
@@ -117,19 +117,19 @@ src/
 │   └── useTheme.ts                   # Light/dark theme state & root class toggling
 ├── utils/
 │   ├── chineseNumbers.ts             # Normal & Formal Mandarin number/price/quantity converters
-│   ├── speech.ts                     # Web Speech API wrapper & voice scoring
+│   ├── speech.ts                     # Cross-platform Web Speech API wrapper, platform detection & voice scoring
 │   └── sfx.ts                        # Web Audio API feedback chimes
 └── components/
     ├── TopBar.vue                    # Header, theme, language/script/numeral, random & checkout controls
-    ├── TtsWarningBanner.vue          # Missing Chinese TTS voice alert
-    ├── CustomerTicket.vue            # Customer persona, orderMode toggle, teacher modal trigger, TTS & order cards
+    ├── TtsWarningBanner.vue          # OS-aware missing/unsupported Chinese TTS voice alert
+    ├── CustomerTicket.vue            # Customer persona, orderMode toggle, teacher modal trigger, TTS & clickable order cards
     ├── IngredientTray.vue            # Interactive POS order menu with category grouping
     ├── MalaBowl.vue                  # Current customer order panel & serve trigger
     ├── CheckoutView.vue              # Receipt & Chinese-numeral keypad
     ├── ResultView.vue                # Order comparison, total verification & read-aloud card
-    ├── TeacherOrderModal.vue         # Teacher custom round builder modal
+    ├── TeacherOrderModal.vue         # Compact grouped teacher custom round builder modal with item chips
     └── ui/
-        ├── CategorySectionHeader.vue # Shared category header with dot, Hanzi, Pinyin & extras
+        ├── CategorySectionHeader.vue # Shared category header (standard & compact inline modes)
         ├── IngredientLabels.vue      # Shared ingredient text stack with unit price
         ├── LangLabel.vue             # Shared Big Chinese + Pinyin + stacked Thai/English label
         └── QtyStepper.vue            # Chinese-numeral +/- quantity stepper
@@ -176,4 +176,8 @@ This is a static frontend app (no backend required). The production build output
 - **GitHub Pages**:
   - Set `base: '/<your-repo-name>/'` in `vite.config.ts` before building if deploying to a repository subpath (`https://<user>.github.io/<repo>/`).
 
-> **Browser TTS Tip (Windows):** Microsoft Edge includes built-in online Mandarin voices (`Xiaoxiao`, `HsiaoChen`) out of the box. In Google Chrome on Windows, install a Chinese Speech language pack under **Windows Settings → Time & language → Speech** if voices are silent.
+> **Browser TTS Tips:**
+> - **Windows:** Microsoft Edge includes built-in online Mandarin voices (`Xiaoxiao`, `HsiaoChen`) out of the box. In Google Chrome on Windows, install a Chinese Speech language pack under **Windows Settings → Time & language → Speech** if voices are silent.
+> - **macOS:** Works out of the box in Safari and Chrome using system Chinese voices (check **System Settings → Accessibility → Spoken Content → System Voice** if missing).
+> - **iPhone / iPad:** Open directly in **Safari** (avoid in-app browsers such as LINE or WeChat), keep Silent mode off with media volume up, and verify Chinese voices under **Settings → Accessibility → Spoken Content → Voices**.
+> - **Android:** Open in **Google Chrome** and ensure Chinese (Mandarin) voice data is downloaded under **Settings → Text-to-speech output** (Google Speech Services).

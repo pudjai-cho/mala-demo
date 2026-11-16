@@ -4,7 +4,13 @@ import CategorySectionHeader from '@/components/ui/CategorySectionHeader.vue'
 import LangLabel from '@/components/ui/LangLabel.vue'
 import { useI18nContext } from '@/composables/useI18n'
 import { usePersistedRef } from '@/composables/usePersistedRef'
-import { INGREDIENTS, getIngredientCategorySections, type IngredientCategorySection } from '@/data/ingredients'
+import {
+  INGREDIENTS,
+  getCategorySectionGridClass,
+  getCategorySectionWrapperClass,
+  getIngredientCategorySections,
+  type IngredientCategorySection,
+} from '@/data/ingredients'
 import { UI_TEXT } from '@/data/uiText'
 import type { Ingredient, VocabDisplayMode } from '@/types/game'
 
@@ -56,16 +62,12 @@ const traySections = computed<IngredientCategorySection[]>(() => {
 
 function sectionWrapperClass(itemCount: number): string {
   if (!groupByCategory.value) return 'col-span-full'
-  if (itemCount <= 2) return 'sm:col-span-2'
-  if (itemCount <= 4) return 'sm:col-span-4'
-  return 'sm:col-span-6'
+  return getCategorySectionWrapperClass(itemCount)
 }
 
 function sectionGridClass(itemCount: number): string {
   if (!groupByCategory.value) return 'grid-cols-2 sm:grid-cols-4 md:grid-cols-6'
-  if (itemCount <= 2) return 'grid-cols-2'
-  if (itemCount <= 4) return 'grid-cols-2 sm:grid-cols-4'
-  return 'grid-cols-3 sm:grid-cols-6'
+  return getCategorySectionGridClass(itemCount)
 }
 
 function handleSpeakOnly(event: Event, ing: Ingredient, lang: 'zh' | 'th' | 'en') {

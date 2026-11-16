@@ -195,13 +195,6 @@ export const UI_TEXT = {
     th: 'เมนูสั่งอาหาร (คลิกเพื่อเพิ่มในออเดอร์)',
     en: 'Order Menu (Click items to add)',
   },
-  allCategories: {
-    zh: '全部',
-    zhTrad: '全部',
-    pinyin: 'Quánbù',
-    th: 'ทั้งหมด',
-    en: 'All',
-  },
   groupByType: {
     zh: '分类显示',
     zhTrad: '分類顯示',
@@ -530,13 +523,6 @@ export const UI_TEXT = {
     th: 'เลือกผักหรือเนื้อสัตว์ที่อยากให้นักเรียนฝึกในรอบนี้',
     en: 'Choose vegetables or meats for the student to practice this round',
   },
-  teacherModalMode: {
-    zh: '开始后的模式',
-    zhTrad: '開始後的模式',
-    pinyin: 'Kāishǐ hòu de móshì',
-    th: 'โหมดหลังจากเริ่ม',
-    en: 'Mode after starting',
-  },
   selectedCount: {
     zh: '已选 {count} 样 · 总价 {total} 元',
     zhTrad: '已選 {count} 樣 · 總價 {total} 元',
@@ -565,11 +551,48 @@ export const UI_TEXT = {
     th: '🔇 ไม่พบเสียงพูดภาษาจีน (Chinese TTS voice) ในเบราว์เซอร์นี้',
     en: '🔇 No Chinese TTS voice detected in this browser',
   },
-  ttsWarningBody: {
+  ttsWarningBodyWindows: {
     zh: '在 Windows 上如果使用 Google Chrome 且未安装中文语音包，语音可能会没有声音 — 建议改用 Microsoft Edge 打开本页面（自带在线中文语音），或在 Windows 设置 → 时间和语言 → 语音 中安装中文语音包。',
     zhTrad: '在 Windows 上如果使用 Google Chrome 且未安裝中文語音，語音可能會沒有聲音 — 建議改用 Microsoft Edge 打開本頁面（內建線上中文語音），或在 Windows 設定 → 時間與語言 → 語音 中安裝中文語音。',
     th: 'ใน Windows ถ้าเปิดด้วย Google Chrome โดยยังไม่ได้ลงชุดเสียงภาษาจีน เสียงพูดอาจจะเงียบ — แนะนำให้ลองเปิดหน้านี้ใน Microsoft Edge (มีเสียงภาษาจีนออนไลน์ในตัว) หรือติดตั้งชุดเสียงภาษาจีนใน Windows Settings → Time & language → Speech',
     en: 'On Windows, Google Chrome may be silent if no Chinese Speech pack is installed — try opening this page in Microsoft Edge (which has built-in online Chinese voices) or install a Chinese voice in Windows Settings → Time & language → Speech.',
+  },
+  ttsWarningBodyMacos: {
+    zh: '在 Mac 上未检测到中文语音 — 请尝试改用 Safari 打开本页面，或在 系统设置 → 辅助功能 → 朗读内容 → 系统声音 中下载中文语音（如 Tingting）。',
+    zhTrad: '在 Mac 上未偵測到中文語音 — 請嘗試改用 Safari 打開本頁面，或在 系統設定 → 輔助使用 → 朗讀內容 → 系統聲音 中下載中文語音（如 Meijia / Tingting）。',
+    th: 'บน Mac ยังไม่พบเสียงพูดภาษาจีน — แนะนำให้ลองเปิดหน้านี้ใน Safari หรือดาวน์โหลดเสียงภาษาจีนใน System Settings → Accessibility → Spoken Content → System Voice',
+    en: 'No Chinese voice was detected on this Mac — try opening this page in Safari, or download a Chinese voice in System Settings → Accessibility → Spoken Content → System Voice.',
+  },
+  ttsWarningBodyIos: {
+    zh: '在 iPhone / iPad 上请直接使用 Safari 打开本页面（避免在微信/LINE 等内置浏览器中打开），关闭静音开关并调大媒体音量；也可在 设置 → 辅助功能 → 朗读内容 → 声音 → 中文 中确认已下载中文语音。',
+    zhTrad: '在 iPhone / iPad 上請直接使用 Safari 打開本頁面（避免在 LINE / 微信等內建瀏覽器中打開），關閉靜音開關並調大媒體音量；也可在 設定 → 輔助使用 → 朗讀內容 → 聲音 → 中文 中確認已下載中文語音。',
+    th: 'บน iPhone / iPad แนะนำให้เปิดหน้านี้ด้วย Safari โดยตรง (หลีกเลี่ยงการเปิดในแอปแชท เช่น LINE) ปิดโหมดปิดเสียง/เพิ่มเสียง และตรวจสอบเสียงภาษาจีนใน Settings → Accessibility → Spoken Content → Voices',
+    en: 'On iPhone / iPad, open this page directly in Safari (avoid in-app browsers like LINE), check that Silent mode is off and volume is up, and verify a Chinese voice under Settings → Accessibility → Spoken Content → Voices.',
+  },
+  ttsWarningBodyAndroid: {
+    zh: '在 Android 上未检测到中文语音 — 建议使用 Google Chrome 打开本页面，并在系统 设置 → 文字转语音 (TTS) 输出 中确认使用 Google 语音服务并下载中文（普通话）语音包。',
+    zhTrad: '在 Android 上未偵測到中文語音 — 建議使用 Google Chrome 打開本頁面，並在系統 設定 → 文字轉語音 (TTS) 輸出 中確認使用 Google 語音服務並下載中文語音包。',
+    th: 'บน Android ยังไม่พบเสียงพูดภาษาจีน — แนะนำให้เปิดด้วย Google Chrome และตรวจสอบใน Settings → Text-to-speech output เพื่อเลือก Google Speech Services และดาวน์โหลดข้อมูลเสียงภาษาจีน',
+    en: 'No Chinese voice was detected on Android — try opening this page in Google Chrome and ensure Chinese voice data is downloaded under Settings → Text-to-speech output (Google Speech Services).',
+  },
+  ttsWarningBodyOther: {
+    zh: '此设备/浏览器暂未检测到中文语音包 — 建议改用最新版 Safari、Microsoft Edge 或 Google Chrome，并在系统语音设置中安装中文（普通话）语音包。',
+    zhTrad: '此裝置/瀏覽器暫未偵測到中文語音 — 建議改用最新版 Safari、Microsoft Edge 或 Google Chrome，並在系統語音設定中安裝中文語音包。',
+    th: 'ไม่พบเสียงพูดภาษาจีนในอุปกรณ์หรือเบราว์เซอร์นี้ — แนะนำให้ลองใช้ Safari, Microsoft Edge หรือ Google Chrome เวอร์ชันล่าสุด และตรวจสอบการติดตั้งเสียงภาษาจีนในการตั้งค่าระบบ',
+    en: 'No Chinese TTS voice was detected on this browser/device — try the latest Safari, Microsoft Edge, or Google Chrome, and ensure a Chinese (Mandarin) voice is installed in your system settings.',
+  },
+  ttsUnsupportedTitle: {
+    zh: '🔇 此浏览器不支持语音朗读 (Web Speech TTS)',
+    zhTrad: '🔇 此瀏覽器不支援語音朗讀 (Web Speech TTS)',
+    pinyin: 'Cǐ liúlǎnqì bù zhīchí yǔyīn lǎngdú',
+    th: '🔇 เบราว์เซอร์นี้ไม่รองรับการอ่านออกเสียง (Web Speech TTS)',
+    en: '🔇 Voice playback (Web Speech TTS) is not supported in this browser',
+  },
+  ttsUnsupportedBody: {
+    zh: '当前浏览器或应用内网页不支持网页语音朗读 — 请改用 Safari（iPhone/iPad/Mac）、Google Chrome 或 Microsoft Edge 打开本页面。',
+    zhTrad: '目前瀏覽器或應用程式內建網頁不支援網頁語音朗讀 — 請改用 Safari（iPhone/iPad/Mac）、Google Chrome 或 Microsoft Edge 打開本頁面。',
+    th: 'เบราว์เซอร์นี้ (หรือหน้าเว็บในแอป) ไม่รองรับการอ่านออกเสียง — กรุณาเปิดหน้านี้ใน Safari (iPhone/iPad/Mac), Google Chrome หรือ Microsoft Edge แทน',
+    en: 'This browser or in-app webview does not support Web Speech synthesis — please open this page in Safari (iPhone/iPad/Mac), Google Chrome, or Microsoft Edge.',
   },
   ticketLangLabel: {
     zh: '点餐语言',

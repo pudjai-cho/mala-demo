@@ -347,7 +347,13 @@ function toggleShowAll() {
           {{ INGREDIENT_MAP[item.ingredientId]?.emoji }}
         </span>
 
-        <div v-if="showOrderWords && INGREDIENT_MAP[item.ingredientId]" class="leading-snug">
+        <button
+          v-if="showOrderWords && INGREDIENT_MAP[item.ingredientId]"
+          type="button"
+          class="cursor-pointer rounded-xl px-1.5 py-0.5 text-left leading-snug transition hover:bg-amber-100/80 active:scale-[0.98] dark:hover:bg-amber-900/40"
+          title="Speak ingredient in Chinese"
+          @click="emit('speakPhrase', ingName(INGREDIENT_MAP[item.ingredientId]))"
+        >
           <div
             v-if="ticketLangs.cn || ticketLangs.pinyin"
             class="flex flex-wrap items-baseline gap-x-1.5"
@@ -386,7 +392,7 @@ function toggleShowAll() {
           >
             {{ INGREDIENT_MAP[item.ingredientId].english }}
           </div>
-        </div>
+        </button>
 
         <button
           type="button"

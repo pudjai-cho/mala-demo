@@ -369,6 +369,18 @@ export function getIngredientCategorySections(
   }))
 }
 
+export function getCategorySectionWrapperClass(itemCount: number): string {
+  if (itemCount <= 2) return 'sm:col-span-2'
+  if (itemCount <= 4) return 'sm:col-span-4'
+  return 'sm:col-span-6'
+}
+
+export function getCategorySectionGridClass(itemCount: number): string {
+  if (itemCount <= 2) return 'grid-cols-2'
+  if (itemCount <= 4) return 'grid-cols-2 sm:grid-cols-4'
+  return 'grid-cols-3 sm:grid-cols-6'
+}
+
 export const CUSTOMER_PERSONAS: CustomerPersona[] = [
   {
     name: 'Xiao Mei',

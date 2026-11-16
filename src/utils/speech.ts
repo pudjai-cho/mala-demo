@@ -2,6 +2,8 @@ import { reactive } from 'vue'
 
 export type SpeechLang = 'zh-CN' | 'zh-TW' | 'th-TH' | 'en-US'
 
+export type SpeechPlatform = 'windows' | 'macos' | 'ios' | 'android' | 'other'
+
 export interface VoiceOption {
   name: string
   lang: string
@@ -16,7 +18,9 @@ export interface SpeechSegment {
 
 export interface SpeechState {
   supported: boolean
+  platform: SpeechPlatform
   voicesLoaded: boolean
+  voicesCheckComplete: boolean
   zhVoices: VoiceOption[]
   thVoices: VoiceOption[]
   enVoices: VoiceOption[]
@@ -26,9 +30,23 @@ export interface SpeechState {
   lastError: string | null
 }
 
+export function detectSpeechPlatform(): SpeechPlatform {
+  if (typeof navigator === 'undefined') return 'other'
+  const ua = navigator.userAgent || ''
+  if (/iPad|iPhone|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) {
+    return 'ios'
+  }
+  if (/Android/i.test(ua)) return 'android'
+  if (/Macintosh|Mac OS X/i.test(ua)) return 'macos'
+  if (/Windows/i.test(ua)) return 'windows'
+  return 'other'
+}
+
 export const speechState = reactive<SpeechState>({
   supported: typeof window !== 'undefined' && 'speechSynthesis' in window,
+  platform: detectSpeechPlatform(),
   voicesLoaded: false,
+  voicesCheckComplete: false,
   zhVoices: [],
   thVoices: [],
   enVoices: [],
@@ -87,7 +105,7 @@ function toOption(v: SpeechSynthesisVoice): VoiceOption {
   return { name: v.name, lang: v.lang, voiceURI: v.voiceURI }
 }
 
-export function refreshVoices(): void {
+export function refreshVoices(markComplete = false): void {
   if (!speechState.supported) return
   rawVoices = window.speechSynthesis.getVoices()
 
@@ -99,6 +117,9 @@ export function refreshVoices(): void {
   speechState.thVoices = th.map(toOption)
   speechState.enVoices = en.map(toOption)
   speechState.voicesLoaded = rawVoices.length > 0
+  if (rawVoices.length > 0 || markComplete) {
+    speechState.voicesCheckComplete = true
+  }
 
   if (
     speechState.selectedZhVoiceURI &&
@@ -117,7 +138,7 @@ export function refreshVoices(): void {
 
   if (zh.length > 0 && speechState.lastError === 'no-zh-voice') {
     speechState.lastError = null
-  } else if (rawVoices.length > 0 && zh.length === 0) {
+  } else if (speechState.voicesCheckComplete && zh.length === 0) {
     speechState.lastError = 'no-zh-voice'
   }
 }
@@ -127,8 +148,9 @@ export function initSpeech(): void {
   initialized = true
 
   refreshVoices()
-  window.speechSynthesis.addEventListener('voiceschanged', refreshVoices)
-  window.setTimeout(refreshVoices, 300)
+  window.speechSynthesis.addEventListener('voiceschanged', () => refreshVoices(false))
+  window.setTimeout(() => refreshVoices(false), 300)
+  window.setTimeout(() => refreshVoices(true), 1200)
 }
 
 export function isSpeechSupported(): boolean {
@@ -189,7 +211,9 @@ export function speakSequence(segments: SpeechSegment[]): void {
 
     const seg = valid[index]
     try {
-      window.speechSynthesis.resume()
+      if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume()
+      }
 
       const utterance = new SpeechSynthesisUtterance(seg.text)
       utterance.lang = seg.lang
@@ -231,10 +255,15 @@ export function speakSequence(segments: SpeechSegment[]): void {
 
   if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
     window.speechSynthesis.cancel()
-    pendingTimer = window.setTimeout(() => {
-      pendingTimer = null
+    if (speechState.platform === 'ios') {
+      // Keep speak() synchronous inside the user tap gesture on iOS/iPadOS WebKit
       playAt(0)
-    }, 80)
+    } else {
+      pendingTimer = window.setTimeout(() => {
+        pendingTimer = null
+        playAt(0)
+      }, 80)
+    }
   } else {
     playAt(0)
   }
