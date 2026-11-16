@@ -118,12 +118,26 @@ export const UI_TEXT = {
     th: 'สุ่มสั่งอาหาร',
     en: 'Random Order',
   },
+  randomGroupHint: {
+    zh: '选难度后自动随机出题',
+    zhTrad: '選難度後自動隨機出題',
+    pinyin: 'Xuǎn nándù hòu zìdòng suíjī chūtí',
+    th: 'เลือกระดับความยากแล้วสุ่มเมนูอัตโนมัติ',
+    en: 'Pick difficulty & generate a random order',
+  },
   teacherCustom: {
     zh: '老师出题',
     zhTrad: '老師出題',
     pinyin: 'Lǎoshī chūtí',
     th: 'ครูตั้งโจทย์',
     en: 'Teacher Sets Order',
+  },
+  teacherGroupHint: {
+    zh: '手动自选菜品和份数',
+    zhTrad: '手動自選菜品和份數',
+    pinyin: 'Shǒudòng zìxuǎn càipǐn hé fènshù',
+    th: 'เลือกเมนูและจำนวนเองได้ตามต้องการ',
+    en: 'Hand-pick dishes & quantities yourself',
   },
   customerRole: {
     zh: '顾客',

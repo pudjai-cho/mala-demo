@@ -281,70 +281,99 @@ const subtitleLine = computed(() => extraLines(UI_TEXT.appTitle).join(' · ') ||
       </div>
     </div>
 
-    <!-- Line 4: Difficulty & Teacher Actions -->
-    <div class="flex min-h-10 flex-wrap items-center justify-between gap-2.5">
+    <!-- Line 4: New Order Controls (Random by Difficulty vs Teacher Custom) -->
+    <div class="flex flex-wrap items-stretch justify-between gap-3">
       <div
-        class="inline-flex flex-wrap gap-1 rounded-xl border border-border-warm bg-cream-soft p-1"
-        role="group"
-        aria-label="Difficulty"
+        class="flex flex-col justify-between gap-2 rounded-2xl border-[1.5px] border-amber-200 bg-amber-50/55 px-3 py-2"
       >
-        <button
-          v-for="opt in [
-            {
-              id: 'easy' as const,
-              entry: UI_TEXT.diffEasy,
-              vars: { min: qtyHanzi(2), max: numHanzi(3) },
-              pinyinVars: { min: qtyPinyin(2), max: numPinyin(3) },
-            },
-            {
-              id: 'medium' as const,
-              entry: UI_TEXT.diffMedium,
-              vars: { min: numHanzi(3), max: numHanzi(4) },
-              pinyinVars: { min: numPinyin(3), max: numPinyin(4) },
-            },
-            {
-              id: 'hard' as const,
-              entry: UI_TEXT.diffHard,
-              vars: { min: numHanzi(4), max: numHanzi(5) },
-              pinyinVars: { min: numPinyin(4), max: numPinyin(5) },
-            },
-          ]"
-          :key="opt.id"
-          type="button"
-          class="cursor-pointer rounded-lg px-2.5 py-1.5 text-left leading-tight transition"
-          :class="
-            difficulty === opt.id
-              ? 'bg-white text-chili shadow-sm'
-              : 'text-ink-muted hover:text-ink'
-          "
-          @click="difficulty = opt.id"
-        >
+        <div class="text-xs font-bold text-amber-900">
           <LangLabel
-            :entry="opt.entry"
-            :vars="opt.vars"
-            :pinyin-vars="opt.pinyinVars"
-            main-class="text-xs font-bold"
-            sub-class="mt-0.5 text-[10px] font-medium opacity-80"
+            :entry="UI_TEXT.randomGroupHint"
+            prefix="🎲 "
+            main-class="text-xs font-extrabold"
+            pinyin-class="mt-0.5 text-[10px] font-semibold text-chili"
+            sub-class="mt-0.5 text-[10px] font-medium text-amber-800/80"
           />
-        </button>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <div
+            class="inline-flex flex-wrap gap-1 rounded-xl bg-amber-100/70 p-1"
+            role="group"
+            aria-label="Difficulty"
+          >
+            <button
+              v-for="opt in [
+                {
+                  id: 'easy' as const,
+                  entry: UI_TEXT.diffEasy,
+                  vars: { min: qtyHanzi(2), max: numHanzi(3) },
+                  pinyinVars: { min: qtyPinyin(2), max: numPinyin(3) },
+                },
+                {
+                  id: 'medium' as const,
+                  entry: UI_TEXT.diffMedium,
+                  vars: { min: numHanzi(3), max: numHanzi(4) },
+                  pinyinVars: { min: numPinyin(3), max: numPinyin(4) },
+                },
+                {
+                  id: 'hard' as const,
+                  entry: UI_TEXT.diffHard,
+                  vars: { min: numHanzi(4), max: numHanzi(5) },
+                  pinyinVars: { min: numPinyin(4), max: numPinyin(5) },
+                },
+              ]"
+              :key="opt.id"
+              type="button"
+              class="cursor-pointer rounded-lg px-2.5 py-1.5 text-left leading-tight transition"
+              :class="
+                difficulty === opt.id
+                  ? 'bg-white text-chili shadow-sm'
+                  : 'text-ink-muted hover:text-ink'
+              "
+              @click="difficulty = opt.id"
+            >
+              <LangLabel
+                :entry="opt.entry"
+                :vars="opt.vars"
+                :pinyin-vars="opt.pinyinVars"
+                main-class="text-xs font-bold"
+                sub-class="mt-0.5 text-[10px] font-medium opacity-80"
+              />
+            </button>
+          </div>
+
+          <button
+            type="button"
+            class="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border-[1.5px] border-amber-300 bg-amber-100 px-3.5 py-2 text-left text-amber-900 shadow-xs transition hover:bg-amber-200 active:scale-[0.98]"
+            @click="emit('newRandom')"
+          >
+            <LangLabel
+              :entry="UI_TEXT.randomOrder"
+              prefix="🎲 "
+              main-class="text-sm font-bold"
+              sub-class="mt-0.5 text-[10px] font-medium opacity-80"
+            />
+          </button>
+        </div>
       </div>
 
-      <div class="flex flex-wrap items-center gap-2.5">
-        <button
-          type="button"
-          class="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border-[1.5px] border-amber-300 bg-amber-50 px-3.5 py-2 text-left text-amber-800 transition hover:bg-amber-200 active:scale-[0.98]"
-          @click="emit('newRandom')"
-        >
+      <div
+        class="flex flex-col justify-between gap-2 rounded-2xl border-[1.5px] border-violet-200 bg-violet-50/55 px-3 py-2"
+      >
+        <div class="text-xs font-bold text-violet-900">
           <LangLabel
-            :entry="UI_TEXT.randomOrder"
-            prefix="🎲 "
-            main-class="text-sm font-bold"
-            sub-class="mt-0.5 text-[10px] font-medium opacity-80"
+            :entry="UI_TEXT.teacherGroupHint"
+            prefix="👩‍🏫 "
+            main-class="text-xs font-extrabold"
+            pinyin-class="mt-0.5 text-[10px] font-semibold text-chili"
+            sub-class="mt-0.5 text-[10px] font-medium text-violet-800/80"
           />
-        </button>
+        </div>
+
         <button
           type="button"
-          class="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border-[1.5px] border-violet-300 bg-violet-100 px-3.5 py-2 text-left text-violet-800 transition hover:bg-violet-200 active:scale-[0.98]"
+          class="inline-flex cursor-pointer items-center gap-1.5 self-start rounded-xl border-[1.5px] border-violet-300 bg-violet-100 px-3.5 py-2 text-left text-violet-800 transition hover:bg-violet-200 active:scale-[0.98]"
           @click="emit('openTeacherModal')"
         >
           <LangLabel

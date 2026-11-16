@@ -20,6 +20,7 @@ const menuTapSpeak = defineModel<boolean>('menuTapSpeak', { required: true })
 
 const emit = defineEmits<{
   add: [ingredientId: string]
+  decrement: [ingredientId: string]
   speak: [ingredient: Ingredient, lang: 'zh' | 'th' | 'en']
   speakPhrase: [phrase: string]
 }>()
@@ -80,6 +81,12 @@ function handleSpeakPrice(event: Event, price: number) {
 function handleCardActivate(id: string) {
   if (props.disabled) return
   emit('add', id)
+}
+
+function handleDecrement(event: Event, id: string) {
+  event.stopPropagation()
+  if (props.disabled) return
+  emit('decrement', id)
 }
 </script>
 
@@ -165,12 +172,23 @@ function handleCardActivate(id: string) {
             @keydown.enter.self="handleCardActivate(item.id)"
             @keydown.space.self.prevent="handleCardActivate(item.id)"
           >
-            <span
+            <div
               v-if="getBowlQty(item.id) > 0"
-              class="absolute -top-2 -right-2 grid h-6 min-w-6 place-items-center rounded-full bg-chili px-1.5 text-xs font-extrabold text-white shadow-md shadow-chili/35"
+              class="absolute -top-2 -right-2 flex items-center overflow-hidden rounded-full bg-chili text-white shadow-md shadow-chili/35"
             >
-              {{ numHanzi(getBowlQty(item.id)) }}
-            </span>
+              <button
+                type="button"
+                class="grid h-6.5 w-6.5 cursor-pointer place-items-center bg-black/15 text-sm font-black transition hover:bg-black/30 active:scale-90"
+                aria-label="Decrease quantity"
+                title="Remove 1"
+                @click="handleDecrement($event, item.id)"
+              >
+                −
+              </button>
+              <span class="grid h-6.5 min-w-6 place-items-center px-1.5 text-xs font-extrabold">
+                {{ numHanzi(getBowlQty(item.id)) }}
+              </span>
+            </div>
 
             <button
               type="button"

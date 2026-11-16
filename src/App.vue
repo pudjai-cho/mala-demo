@@ -61,6 +61,7 @@ function handleApplyCustomOrder(items: OrderItem[], mode: OrderMode) {
           :get-bowl-qty="game.getBowlQty"
           :vocab-display-mode="game.vocabDisplayMode.value"
           @add="game.addToBowl"
+          @decrement="game.decrementFromBowl"
           @speak="game.speakIngredient"
           @speak-phrase="game.speakChinesePhrase"
         />

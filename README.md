@@ -28,9 +28,12 @@ Cycle how the **Customer Order** and **Order Menu** display information:
 - **Order Modes**:
   - **`👀 看菜單` (View Menu)**: Customer's order cards are visible on screen.
   - **`👂 聽老師說` (Listen to Teacher)**: Order cards are hidden behind a listening prompt; includes **`👁️ 偷看小抄` (Peek Note)** to reveal/hide the order.
-- **Difficulty Levels**: `簡單` (2–3 items), `中等` (3–4 items), and `挑戰` (4–5 items).
-- **Teacher Sets Order (`👩‍🏫 老師出題`)**: Custom modal to hand-pick specific ingredients, quantities (1–9), and the starting order mode (`listening` or `reading`).
-- **Menu Grouping (`🗂️ 分類顯示`)**: Toggle between a flat menu grid or 4 color-coded category sections (`蔬菜`, `肉類`, `海鮮`, `豆蛋麵`) in a compact 3-row desktop layout.
+- **Order Creation Cards (`TopBar.vue`)**:
+  - **Random by Difficulty**: Grouped card combining the difficulty selector (`簡單` 2–3, `中等` 3–4, `挑戰` 4–5 items) and `🎲 隨機點餐` button with a short multilingual hint.
+  - **Teacher Sets Order (`👩‍🏫 老師出題`)**: Dedicated card opening a custom modal to hand-pick specific ingredients, quantities (1–9), and the starting order mode (`listening` or `reading`).
+- **Menu Grouping & Quick Decrement (`IngredientTray.vue`)**:
+  - Toggle **`🗂️ 分類顯示`** between a flat menu grid or 4 color-coded category sections (`蔬菜`, `肉類`, `海鮮`, `豆蛋麵`) in a compact 3-row desktop layout.
+  - Selected menu cards display an inline `[ − | count ]` badge in the top-right corner so quantities can be subtracted directly on the menu as well as in the Customer Order panel.
 
 ### 4. Four Checkout / Number-Reading Modes
 1. **`🔊 免結帳` (No Math)**: Skips the keypad after clicking Serve and grades purely on order accuracy while showing the auto-calculated Chinese total reading card.
@@ -89,7 +92,7 @@ Cycle how the **Customer Order** and **Order Menu** display information:
 - **Bundler**: [Vite](https://vite.dev/) (`^6.2.0`)
 - **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) (`^4.3.5` via `@tailwindcss/vite`)
 - **Fonts**: Google Fonts (`Noto Sans`, `Noto Sans Thai`, `Noto Sans SC`)
-- **Package Manager**: `pnpm`
+- **Package Manager**: `pnpm` (pinned to `pnpm@12.5.1` via `packageManager`)
 
 ---
 
@@ -159,6 +162,11 @@ pnpm run preview
 
 This is a static frontend app (no backend required). The production build outputs to `dist/`.
 
+- **Cloudflare Workers Static Assets** (preconfigured via `wrangler.jsonc`):
+  - **Build command:** `pnpm run build`
+  - **Deploy command:** `npx wrangler deploy`
+  - **Preview command:** `npx wrangler preview`
+  - Serves `./dist` with `"not_found_handling": "single-page-application"`.
 - **Vercel / Cloudflare Pages / Netlify**:
   - **Build command:** `pnpm run build`
   - **Output directory:** `dist`
