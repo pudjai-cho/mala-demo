@@ -28,6 +28,7 @@ lerna-debug.log*
 # Hosting / deploy artifacts
 .vercel/
 .netlify/
+.wrangler/
 
 # Editor / IDE
 .vscode/*
