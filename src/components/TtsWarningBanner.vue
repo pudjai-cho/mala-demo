@@ -16,7 +16,7 @@ const { showThai, showEnglish, cn } = useI18nContext()
       speechState.voicesLoaded &&
       speechState.zhVoices.length === 0
     "
-    class="flex items-start justify-between gap-3 rounded-2xl border-2 border-amber-400 bg-amber-50 px-4 py-3 text-amber-950"
+    class="flex items-start justify-between gap-3 rounded-2xl border-2 border-amber-400 bg-amber-50 px-4 py-3 text-amber-950 dark:border-amber-700 dark:bg-amber-950/45 dark:text-amber-100"
   >
     <div class="flex flex-col gap-2.5">
       <div>
@@ -37,7 +37,7 @@ const { showThai, showEnglish, cn } = useI18nContext()
 
     <button
       type="button"
-      class="grid h-8 w-8 shrink-0 cursor-pointer place-items-center rounded-lg bg-amber-100 font-extrabold text-amber-900 hover:bg-amber-200"
+      class="grid h-8 w-8 shrink-0 cursor-pointer place-items-center rounded-lg bg-amber-100 font-extrabold text-amber-900 hover:bg-amber-200 dark:bg-amber-900/60 dark:text-amber-100 dark:hover:bg-amber-800/70"
       aria-label="Dismiss warning"
       @click="dismissed = true"
     >

@@ -27,7 +27,7 @@ const { showPinyin, showThai, showEnglish, ingName, ingPinyin, priceHanzi, price
     >
       <span v-if="showThai">{{ ingredient.thai }}</span>
       <span v-if="showEnglish">{{ ingredient.english }}</span>
-      <span v-if="showUnitPrice" class="font-bold text-amber-700">
+      <span v-if="showUnitPrice" class="font-bold text-amber-700 dark:text-amber-300">
         {{ priceHanzi(ingredient.price) }}
         <span v-if="showPinyin" class="font-semibold text-chili">
           ({{ pricePinyin(ingredient.price) }})

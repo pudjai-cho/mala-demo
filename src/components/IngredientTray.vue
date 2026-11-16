@@ -92,7 +92,7 @@ function handleDecrement(event: Event, id: string) {
 
 <template>
   <section
-    class="rounded-2xl border-2 border-border-warm bg-white p-4.5 shadow-[0_8px_24px_rgba(105,52,22,0.08)]"
+    class="rounded-2xl border-2 border-border-warm bg-surface p-4.5 shadow-[0_8px_24px_rgba(105,52,22,0.08)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.35)]"
   >
     <div class="mb-3.5 flex flex-wrap items-center justify-between gap-3 border-b border-cream-soft pb-3">
       <h2 class="m-0 text-lg font-extrabold">
@@ -109,8 +109,8 @@ function handleDecrement(event: Event, id: string) {
           class="cursor-pointer rounded-xl border-[1.5px] px-3 py-1.5 text-left transition"
           :class="
             menuTapSpeak
-              ? 'border-herb bg-herb-soft text-teal-800'
-              : 'border-border-warm bg-white text-ink-muted hover:bg-cream-soft'
+              ? 'border-herb bg-herb-soft text-teal-800 dark:text-teal-200'
+              : 'border-border-warm bg-surface text-ink-muted hover:bg-cream-soft'
           "
           @click="menuTapSpeak = !menuTapSpeak"
         >
@@ -126,8 +126,8 @@ function handleDecrement(event: Event, id: string) {
           class="cursor-pointer rounded-xl border-[1.5px] px-3 py-1.5 text-left transition"
           :class="
             groupByCategory
-              ? 'border-chili bg-[#fff8f7] text-chili'
-              : 'border-border-warm bg-white text-ink-muted hover:bg-cream-soft'
+              ? 'border-chili bg-surface-active text-chili'
+              : 'border-border-warm bg-surface text-ink-muted hover:bg-cream-soft'
           "
           @click="groupByCategory = !groupByCategory"
         >
@@ -162,8 +162,8 @@ function handleDecrement(event: Event, id: string) {
             class="relative flex cursor-pointer flex-col items-center justify-center gap-0.5 rounded-2xl border-2 px-1.5 text-center transition select-none hover:-translate-y-0.5 hover:border-broth hover:shadow-md active:scale-[0.96]"
             :class="[
               getBowlQty(item.id) > 0
-                ? 'border-chili bg-[#fff9f8]'
-                : 'border-border-warm bg-white',
+                ? 'border-chili bg-surface-active'
+                : 'border-border-warm bg-surface',
               showTrayPictures && showTrayWords ? 'pt-2.5 pb-2' : 'min-h-[96px] py-3',
               disabled ? 'pointer-events-none opacity-50' : '',
             ]"
@@ -215,13 +215,13 @@ function handleDecrement(event: Event, id: string) {
               <div v-if="showThai" class="text-[11px] leading-tight text-ink-muted">
                 {{ item.thai }}
               </div>
-              <div v-if="showEnglish" class="text-[11px] font-semibold leading-tight text-gray-600">
+              <div v-if="showEnglish" class="text-[11px] font-semibold leading-tight text-gray-600 dark:text-ink-muted">
                 {{ item.english }}
               </div>
             </template>
             <button
               type="button"
-              class="mt-1 cursor-pointer rounded-xl bg-amber-100 px-2.5 py-0.5 leading-tight text-amber-800 transition hover:bg-amber-200"
+              class="mt-1 cursor-pointer rounded-xl bg-amber-100 px-2.5 py-0.5 leading-tight text-amber-800 transition hover:bg-amber-200 dark:bg-amber-900/50 dark:text-amber-200 dark:hover:bg-amber-800/60"
               title="Speak price in Chinese"
               @click="handleSpeakPrice($event, item.price)"
             >

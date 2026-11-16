@@ -79,7 +79,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
 
 <template>
   <section
-    class="rounded-2xl border-2 border-border-warm bg-white p-5 shadow-[0_8px_24px_rgba(105,52,22,0.08)]"
+    class="rounded-2xl border-2 border-border-warm bg-surface p-5 shadow-[0_8px_24px_rgba(105,52,22,0.08)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.35)]"
   >
     <div class="mb-4 flex flex-wrap items-center justify-between gap-2.5">
       <div>
@@ -111,8 +111,8 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
           class="cursor-pointer rounded-2xl border-[1.5px] px-3 py-1.5 text-left transition"
           :class="
             showLineSubtotals
-              ? 'border-herb bg-herb-soft text-teal-800'
-              : 'border-border-warm bg-white text-ink-muted hover:bg-cream-soft'
+              ? 'border-herb bg-herb-soft text-teal-800 dark:text-teal-200'
+              : 'border-border-warm bg-surface text-ink-muted hover:bg-cream-soft'
           "
           @click="toggleSubtotals"
         >
@@ -124,7 +124,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
         </button>
         <button
           type="button"
-          class="cursor-pointer rounded-xl border border-border-warm bg-cream-soft px-3.5 py-2 text-left text-ink-muted transition hover:bg-orange-100"
+          class="cursor-pointer rounded-xl border border-border-warm bg-cream-soft px-3.5 py-2 text-left text-ink-muted transition hover:bg-orange-100 dark:hover:bg-white/10"
           @click="emit('back')"
         >
           <LangLabel
@@ -139,7 +139,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
 
     <div class="grid grid-cols-1 gap-4.5 md:grid-cols-[1.2fr_0.9fr]">
       <!-- Receipt items / Chinese number prompt -->
-      <div class="flex flex-col gap-3 rounded-2xl border-2 border-dashed border-border-warm bg-[#fffaf5] p-4">
+      <div class="flex flex-col gap-3 rounded-2xl border-2 border-dashed border-border-warm bg-surface-alt p-4">
         <h3 class="m-0 text-base font-extrabold">
           <LangLabel
             :entry="UI_TEXT.servedItemsTitle"
@@ -151,7 +151,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
           <div
             v-for="item in bowl"
             :key="item.ingredientId"
-            class="flex items-center justify-between gap-2 rounded-xl border border-border-warm bg-white px-3 py-2"
+            class="flex items-center justify-between gap-2 rounded-xl border border-border-warm bg-surface px-3 py-2"
           >
             <div class="flex items-center gap-2.5">
               <span class="text-2xl">{{ INGREDIENT_MAP[item.ingredientId]?.emoji }}</span>
@@ -171,7 +171,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
               </div>
               <span
                 v-if="showLineSubtotals"
-                class="rounded-xl bg-amber-100 px-2 py-0.5 text-center leading-tight text-amber-800"
+                class="rounded-xl bg-amber-100 px-2 py-0.5 text-center leading-tight text-amber-800 dark:bg-amber-900/50 dark:text-amber-200"
               >
                 <span class="block text-xs font-extrabold">
                   = {{ priceHanzi((INGREDIENT_MAP[item.ingredientId]?.price ?? 0) * item.quantity) }}
@@ -186,47 +186,47 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
 
         <div
           v-if="isReadNumberMode"
-          class="mt-auto rounded-2xl border-[1.5px] border-emerald-300 bg-emerald-50 px-4 py-3.5"
+          class="mt-auto rounded-2xl border-[1.5px] border-emerald-300 bg-emerald-50 px-4 py-3.5 dark:border-emerald-800/70 dark:bg-emerald-950/35"
         >
-          <div class="text-xs font-bold text-emerald-800">
+          <div class="text-xs font-bold text-emerald-800 dark:text-emerald-300">
             <LangLabel
               :entry="UI_TEXT.readPromptTitle"
               prefix="🗣️ "
               sub-class="mt-0.5 text-[11px] font-medium opacity-80"
             />
           </div>
-          <div class="mt-1.5 text-3xl font-black text-emerald-950">
+          <div class="mt-1.5 text-3xl font-black text-emerald-950 dark:text-emerald-100">
             “一共 <span class="text-chili">{{ totalHanziDisplay }}</span>”
           </div>
         </div>
 
-        <div v-else class="mt-auto rounded-2xl border-[1.5px] border-emerald-300 bg-emerald-50 px-3.5 py-3">
-          <div class="text-xs font-bold text-emerald-800">
+        <div v-else class="mt-auto rounded-2xl border-[1.5px] border-emerald-300 bg-emerald-50 px-3.5 py-3 dark:border-emerald-800/70 dark:bg-emerald-950/35">
+          <div class="text-xs font-bold text-emerald-800 dark:text-emerald-300">
             <LangLabel
               :entry="UI_TEXT.speakPromptTitle"
               prefix="🗣️ "
               sub-class="mt-0.5 text-[11px] font-medium opacity-80"
             />
           </div>
-          <div class="mt-1 text-2xl font-black text-emerald-950">
+          <div class="mt-1 text-2xl font-black text-emerald-950 dark:text-emerald-100">
             “一共
             <span class="inline-block min-w-13 border-b-[3px] border-emerald-500 text-center text-chili">
               {{ enteredPrice === null ? '___' : qtyHanzi(enteredPrice) }}
             </span>
             元！”
           </div>
-          <div v-if="showPinyin" class="mt-0.5 text-xs font-semibold text-emerald-700">
+          <div v-if="showPinyin" class="mt-0.5 text-xs font-semibold text-emerald-700 dark:text-emerald-300">
             Yīgòng ___ yuán!
           </div>
-          <div v-if="showThai" class="mt-0.5 text-xs text-emerald-700">ทั้งหมด ___ หยวน</div>
-          <div v-if="showEnglish" class="mt-0.5 text-xs text-emerald-700">Total ___ yuan</div>
+          <div v-if="showThai" class="mt-0.5 text-xs text-emerald-700 dark:text-emerald-300">ทั้งหมด ___ หยวน</div>
+          <div v-if="showEnglish" class="mt-0.5 text-xs text-emerald-700 dark:text-emerald-300">Total ___ yuan</div>
         </div>
       </div>
 
       <!-- Kid-friendly Number Keypad -->
       <div class="flex flex-col gap-3 rounded-2xl border-2 border-border-warm bg-cream-soft p-4">
         <div
-          class="flex items-baseline justify-between rounded-2xl border-2 border-border-warm bg-white px-4 py-3"
+          class="flex items-baseline justify-between rounded-2xl border-2 border-border-warm bg-surface px-4 py-3"
         >
           <span class="text-sm font-bold text-ink-muted">
             <LangLabel
@@ -248,7 +248,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
               v-for="key in row"
               :key="key.digit"
               type="button"
-              class="cursor-pointer rounded-xl border-[1.5px] border-border-warm bg-white py-3 leading-tight text-ink transition hover:bg-cream-soft active:scale-95"
+              class="cursor-pointer rounded-xl border-[1.5px] border-border-warm bg-surface py-3 leading-tight text-ink transition hover:bg-cream-soft active:scale-95"
               @click="emit('appendDigit', key.digit)"
             >
               <div class="text-xl font-extrabold">{{ key.label }}</div>
@@ -259,7 +259,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
           </template>
           <button
             type="button"
-            class="cursor-pointer rounded-xl border-[1.5px] border-border-warm bg-[#fae8d8] py-3 leading-tight text-ink-muted transition hover:bg-orange-200 active:scale-95"
+            class="cursor-pointer rounded-xl border-[1.5px] border-border-warm bg-[#fae8d8] py-3 leading-tight text-ink-muted transition hover:bg-orange-200 active:scale-95 dark:bg-surface-alt dark:hover:bg-white/10"
             @click="emit('clearDigits')"
           >
             <div class="text-base font-extrabold">{{ cn(UI_TEXT.keypadClear) }}</div>
@@ -269,7 +269,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
           </button>
           <button
             type="button"
-            class="cursor-pointer rounded-xl border-[1.5px] border-border-warm bg-white py-3 leading-tight text-ink transition hover:bg-cream-soft active:scale-95"
+            class="cursor-pointer rounded-xl border-[1.5px] border-border-warm bg-surface py-3 leading-tight text-ink transition hover:bg-cream-soft active:scale-95"
             @click="emit('appendDigit', '0')"
           >
             <div class="text-xl font-extrabold">{{ numHanzi(0) }}</div>
@@ -279,7 +279,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
           </button>
           <button
             type="button"
-            class="cursor-pointer rounded-xl border-[1.5px] border-border-warm bg-[#fae8d8] py-3.5 text-base font-extrabold text-ink-muted transition hover:bg-orange-200 active:scale-95"
+            class="cursor-pointer rounded-xl border-[1.5px] border-border-warm bg-[#fae8d8] py-3.5 text-base font-extrabold text-ink-muted transition hover:bg-orange-200 active:scale-95 dark:bg-surface-alt dark:hover:bg-white/10"
             @click="emit('backspace')"
           >
             ⌫

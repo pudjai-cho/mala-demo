@@ -33,16 +33,17 @@ const isTicketLangConfig = (v: unknown): v is TicketLangConfig =>
 const props = defineProps<{
   customer: CustomerPersona
   order: OrderItem[]
-  orderMode: OrderMode
   phase: GamePhase
 }>()
 
+const orderMode = defineModel<OrderMode>('orderMode', { required: true })
 const peekTicket = defineModel<boolean>('peekTicket', { required: true })
 const vocabDisplayMode = defineModel<VocabDisplayMode>('vocabDisplayMode', { required: true })
 
 const emit = defineEmits<{
   speakOrder: [lang: 'zh' | 'th' | 'en']
   speakPhrase: [phrase: string]
+  openTeacherModal: []
 }>()
 
 const {
@@ -67,7 +68,7 @@ const ticketLangs = usePersistedRef<TicketLangConfig>(
 
 const isOrderVisible = computed(() => {
   if (props.phase === 'result') return true
-  if (props.orderMode === 'reading') return true
+  if (orderMode.value === 'reading') return true
   return peekTicket.value
 })
 
@@ -121,7 +122,7 @@ function toggleShowAll() {
 
 <template>
   <section
-    class="rounded-2xl border-2 border-border-warm bg-white px-5 py-4 shadow-[0_8px_24px_rgba(105,52,22,0.08)]"
+    class="rounded-2xl border-2 border-border-warm bg-surface px-5 py-4 shadow-[0_8px_24px_rgba(105,52,22,0.08)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.35)]"
   >
     <div class="flex flex-wrap items-start gap-3.5">
       <div
@@ -146,20 +147,46 @@ function toggleShowAll() {
               sub-class="mt-0.5 text-[10px] font-medium opacity-80"
             />
           </span>
-          <span
-            class="rounded-xl px-2.5 py-1 text-xs font-bold"
-            :class="
-              orderMode === 'listening'
-                ? 'bg-amber-100 text-amber-800'
-                : 'bg-sky-100 text-sky-700'
-            "
+          <div
+            class="inline-flex flex-wrap gap-1 rounded-xl border border-border-warm bg-cream-soft p-1"
+            role="group"
+            aria-label="Order mode"
           >
-            <LangLabel
-              :entry="orderMode === 'listening' ? UI_TEXT.modeListening : UI_TEXT.modeReading"
-              :prefix="orderMode === 'listening' ? '👂 ' : '👀 '"
-              sub-class="text-[10px] font-medium opacity-85"
-            />
-          </span>
+            <button
+              type="button"
+              class="cursor-pointer rounded-lg px-2.5 py-1 text-left transition"
+              :class="
+                orderMode === 'reading'
+                  ? 'bg-surface text-chili shadow-sm'
+                  : 'text-ink-muted hover:text-ink'
+              "
+              @click="orderMode = 'reading'"
+            >
+              <LangLabel
+                :entry="UI_TEXT.modeReading"
+                prefix="👀 "
+                main-class="text-xs font-bold"
+                sub-class="mt-0.5 text-[10px] font-medium opacity-80"
+              />
+            </button>
+            <button
+              type="button"
+              class="cursor-pointer rounded-lg px-2.5 py-1 text-left transition"
+              :class="
+                orderMode === 'listening'
+                  ? 'bg-surface text-chili shadow-sm'
+                  : 'text-ink-muted hover:text-ink'
+              "
+              @click="orderMode = 'listening'"
+            >
+              <LangLabel
+                :entry="UI_TEXT.modeListening"
+                prefix="👂 "
+                main-class="text-xs font-bold"
+                sub-class="mt-0.5 text-[10px] font-medium opacity-80"
+              />
+            </button>
+          </div>
         </div>
 
         <!-- Customer Greeting (follows global TopBar language settings) -->
@@ -175,11 +202,11 @@ function toggleShowAll() {
         </p>
       </div>
 
-      <div class="flex flex-wrap gap-2">
+      <div class="flex flex-wrap items-center justify-end gap-2">
         <button
           v-if="speechOk"
           type="button"
-          class="cursor-pointer rounded-xl border-[1.5px] border-border-warm bg-cream-soft px-3.5 py-2 text-left text-ink transition hover:bg-orange-100"
+          class="cursor-pointer rounded-xl border-[1.5px] border-border-warm bg-cream-soft px-3.5 py-2 text-left text-ink transition hover:bg-orange-100 dark:hover:bg-white/10"
           @click="emit('speakOrder', 'zh')"
         >
           <LangLabel
@@ -193,7 +220,7 @@ function toggleShowAll() {
         <button
           v-if="speechOk"
           type="button"
-          class="cursor-pointer rounded-xl border-[1.5px] border-border-warm bg-cream-soft px-3.5 py-2 text-sm font-bold text-ink transition hover:bg-orange-100"
+          class="cursor-pointer rounded-xl border-[1.5px] border-border-warm bg-cream-soft px-3.5 py-2 text-sm font-bold text-ink transition hover:bg-orange-100 dark:hover:bg-white/10"
           @click="emit('speakOrder', 'th')"
         >
           🔊 ไทย
@@ -201,7 +228,7 @@ function toggleShowAll() {
         <button
           v-if="speechOk"
           type="button"
-          class="cursor-pointer rounded-xl border-[1.5px] border-border-warm bg-cream-soft px-3.5 py-2 text-sm font-bold text-ink transition hover:bg-orange-100"
+          class="cursor-pointer rounded-xl border-[1.5px] border-border-warm bg-cream-soft px-3.5 py-2 text-sm font-bold text-ink transition hover:bg-orange-100 dark:hover:bg-white/10"
           @click="emit('speakOrder', 'en')"
         >
           🔊 EN
@@ -209,12 +236,24 @@ function toggleShowAll() {
         <button
           v-if="orderMode === 'listening' && phase !== 'result'"
           type="button"
-          class="cursor-pointer rounded-xl border-[1.5px] border-border-warm bg-cream-soft px-3.5 py-2 text-left text-ink transition hover:bg-orange-100"
+          class="cursor-pointer rounded-xl border-[1.5px] border-border-warm bg-cream-soft px-3.5 py-2 text-left text-ink transition hover:bg-orange-100 dark:hover:bg-white/10"
           @click="peekTicket = !peekTicket"
         >
           <LangLabel
             :entry="peekTicket ? UI_TEXT.peekHide : UI_TEXT.peekShow"
             :prefix="peekTicket ? '🙈 ' : '👁️ '"
+            main-class="text-sm font-bold"
+            sub-class="mt-0.5 text-[10px] font-medium opacity-80"
+          />
+        </button>
+        <button
+          type="button"
+          class="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border-[1.5px] border-violet-300 bg-violet-100 px-3.5 py-2 text-left text-violet-800 transition hover:bg-violet-200 active:scale-[0.98] dark:border-violet-700 dark:bg-violet-900/60 dark:text-violet-100 dark:hover:bg-violet-800/70"
+          @click="emit('openTeacherModal')"
+        >
+          <LangLabel
+            :entry="UI_TEXT.teacherCustom"
+            prefix="👩‍🏫 "
             main-class="text-sm font-bold"
             sub-class="mt-0.5 text-[10px] font-medium opacity-80"
           />
@@ -247,8 +286,8 @@ function toggleShowAll() {
           class="cursor-pointer rounded-full border-[1.5px] px-2.5 py-1 text-xs font-semibold transition"
           :class="
             pill.active
-              ? 'border-herb bg-herb-soft text-teal-800'
-              : 'border-border-warm bg-white text-ink-muted hover:bg-cream-soft'
+              ? 'border-herb bg-herb-soft text-teal-800 dark:text-teal-200'
+              : 'border-border-warm bg-surface text-ink-muted hover:bg-cream-soft'
           "
           @click="toggleTicketLang(pill.key)"
         >
@@ -262,8 +301,8 @@ function toggleShowAll() {
           class="cursor-pointer rounded-xl border-[1.5px] px-3 py-1.5 text-left transition"
           :class="
             vocabDisplayMode !== 'all'
-              ? 'border-amber-400 bg-amber-100 text-amber-900'
-              : 'border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-100'
+              ? 'border-amber-400 bg-amber-100 text-amber-900 dark:border-amber-600 dark:bg-amber-900/50 dark:text-amber-100'
+              : 'border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-100 dark:border-amber-800/70 dark:bg-amber-950/40 dark:text-amber-200 dark:hover:bg-amber-900/50'
           "
           @click="swapPicAndText"
         >
@@ -279,8 +318,8 @@ function toggleShowAll() {
           class="cursor-pointer rounded-xl border-[1.5px] px-3 py-1.5 text-left transition"
           :class="
             vocabDisplayMode === 'all'
-              ? 'border-herb bg-herb-soft text-teal-800'
-              : 'border-border-warm bg-white text-ink-muted hover:bg-cream-soft'
+              ? 'border-herb bg-herb-soft text-teal-800 dark:text-teal-200'
+              : 'border-border-warm bg-surface text-ink-muted hover:bg-cream-soft'
           "
           @click="toggleShowAll"
         >
@@ -302,7 +341,7 @@ function toggleShowAll() {
       <div
         v-for="item in order"
         :key="item.ingredientId"
-        class="flex items-center gap-2.5 rounded-2xl border-[1.5px] border-amber-200 bg-[#fffaf3] px-3.5 py-2"
+        class="flex items-center gap-2.5 rounded-2xl border-[1.5px] border-amber-200 bg-surface-alt px-3.5 py-2 dark:border-amber-800/60"
       >
         <span v-if="showOrderPictures" :class="showOrderWords ? 'text-2xl' : 'text-3xl'">
           {{ INGREDIENT_MAP[item.ingredientId]?.emoji }}
@@ -351,7 +390,7 @@ function toggleShowAll() {
 
         <button
           type="button"
-          class="cursor-pointer rounded-full bg-rose-100 px-2.5 py-0.5 text-sm font-black text-chili transition hover:bg-rose-200"
+          class="cursor-pointer rounded-full bg-rose-100 px-2.5 py-0.5 text-sm font-black text-chili transition hover:bg-rose-200 dark:bg-rose-950/70 dark:hover:bg-rose-900/80"
           title="Speak quantity in Chinese"
           @click="emit('speakPhrase', quantityWithUnit(item.ingredientId, item.quantity))"
         >
@@ -365,7 +404,7 @@ function toggleShowAll() {
 
     <div
       v-else
-      class="mt-3 flex items-center gap-3 rounded-2xl border-[1.5px] border-dashed border-amber-400 bg-amber-50 px-4 py-3.5"
+      class="mt-3 flex items-center gap-3 rounded-2xl border-[1.5px] border-dashed border-amber-400 bg-amber-50 px-4 py-3.5 dark:border-amber-700 dark:bg-amber-950/40"
     >
       <div class="text-3xl">🤫</div>
       <div class="text-sm">
@@ -373,10 +412,10 @@ function toggleShowAll() {
         <div v-if="showPinyin" class="text-xs font-semibold text-chili">
           {{ cnPinyin(UI_TEXT.listeningHiddenTitle) }}
         </div>
-        <div v-if="showThai" class="font-semibold text-amber-800">
+        <div v-if="showThai" class="font-semibold text-amber-800 dark:text-amber-200">
           {{ UI_TEXT.listeningHiddenTitle.th }}
         </div>
-        <div v-if="showEnglish" class="font-semibold text-amber-800">
+        <div v-if="showEnglish" class="font-semibold text-amber-800 dark:text-amber-200">
           {{ UI_TEXT.listeningHiddenTitle.en }}
         </div>
         <p class="mt-0.5 text-xs text-ink-muted">{{ cn(UI_TEXT.listeningHiddenDesc) }}</p>

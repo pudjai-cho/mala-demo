@@ -26,28 +26,27 @@ function handleApplyCustomOrder(items: OrderItem[], mode: OrderMode) {
 <template>
   <div class="mx-auto flex max-w-[1320px] flex-col gap-4 px-5 pt-4 pb-8">
     <TopBar
-      v-model:order-mode="game.orderMode.value"
       v-model:checkout-mode="game.checkoutMode.value"
       v-model:difficulty="game.difficulty.value"
       :stars="game.stars.value"
       :answered-count="game.answeredCount.value"
       :round-number="game.roundNumber.value"
       @new-random="game.startNewRandomRound()"
-      @open-teacher-modal="teacherModalOpen = true"
     />
 
     <TtsWarningBanner />
 
     <main class="flex flex-col gap-4">
       <CustomerTicket
+        v-model:order-mode="game.orderMode.value"
         v-model:peek-ticket="game.peekListeningTicket.value"
         v-model:vocab-display-mode="game.vocabDisplayMode.value"
         :customer="game.currentCustomer.value"
         :order="game.customerOrder.value"
-        :order-mode="game.orderMode.value"
         :phase="game.phase.value"
         @speak-order="game.speakOrder"
         @speak-phrase="game.speakChinesePhrase"
+        @open-teacher-modal="teacherModalOpen = true"
       />
 
       <!-- SCOOPING STAGE -->

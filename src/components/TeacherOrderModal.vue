@@ -106,13 +106,13 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
     @click.self="emit('close')"
   >
     <div
-      class="flex max-h-[90vh] w-full max-w-[840px] flex-col overflow-hidden rounded-3xl border-2 border-border-warm bg-white shadow-2xl"
+      class="flex max-h-[90vh] w-full max-w-[840px] flex-col overflow-hidden rounded-3xl border-2 border-border-warm bg-surface shadow-2xl"
     >
       <!-- Pinned Header -->
-      <div class="flex shrink-0 items-start justify-between gap-3 border-b border-border-warm bg-white px-5 pt-4.5 pb-3.5">
+      <div class="flex shrink-0 items-start justify-between gap-3 border-b border-border-warm bg-surface px-5 pt-4.5 pb-3.5">
         <div class="flex min-w-0 items-start gap-3">
           <div
-            class="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-border-warm bg-gradient-to-br from-rose-50 to-orange-100 text-2xl"
+            class="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-border-warm bg-gradient-to-br from-rose-50 to-orange-100 text-2xl dark:from-rose-950/60 dark:to-orange-950/60"
           >
             👩‍🏫
           </div>
@@ -136,7 +136,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
 
         <button
           type="button"
-          class="grid h-9 w-9 shrink-0 cursor-pointer place-items-center rounded-xl bg-cream-soft font-extrabold text-ink transition hover:bg-orange-100"
+          class="grid h-9 w-9 shrink-0 cursor-pointer place-items-center rounded-xl bg-cream-soft font-extrabold text-ink transition hover:bg-orange-100 dark:hover:bg-white/10"
           aria-label="Close modal"
           @click="emit('close')"
         >
@@ -145,7 +145,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
       </div>
 
       <!-- Pinned Controls: Mode & Category Filter -->
-      <div class="flex shrink-0 flex-col gap-3 border-b border-border-warm bg-[#fffaf5] px-5 py-3">
+      <div class="flex shrink-0 flex-col gap-3 border-b border-border-warm bg-surface-alt px-5 py-3">
         <!-- Mode after starting -->
         <div class="flex flex-col gap-1.5">
           <div class="text-xs font-extrabold text-ink">
@@ -167,14 +167,14 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
               class="flex cursor-pointer items-center gap-2.5 rounded-xl border-[1.5px] px-3 py-2 text-left transition"
               :class="
                 chosenMode === opt.value
-                  ? 'border-chili bg-white text-chili shadow-sm'
-                  : 'border-border-warm bg-white/70 text-ink-muted hover:bg-white hover:text-ink'
+                  ? 'border-chili bg-surface text-chili shadow-sm'
+                  : 'border-border-warm bg-surface/70 text-ink-muted hover:bg-surface hover:text-ink'
               "
               @click="chosenMode = opt.value"
             >
               <span
                 class="grid h-4 w-4 shrink-0 place-items-center rounded-full border-[1.5px]"
-                :class="chosenMode === opt.value ? 'border-chili bg-chili' : 'border-ink-muted/40 bg-white'"
+                :class="chosenMode === opt.value ? 'border-chili bg-chili' : 'border-ink-muted/40 bg-surface'"
               >
                 <span v-if="chosenMode === opt.value" class="h-1.5 w-1.5 rounded-full bg-white" />
               </span>
@@ -197,7 +197,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
             :class="
               activeCategory === 'all'
                 ? 'border-chili bg-chili text-white'
-                : 'border-border-warm bg-white text-ink-muted hover:bg-cream-soft'
+                : 'border-border-warm bg-surface text-ink-muted hover:bg-cream-soft'
             "
             @click="activeCategory = 'all'"
           >
@@ -221,7 +221,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
             :class="
               activeCategory === cat.id
                 ? 'border-chili bg-chili text-white'
-                : 'border-border-warm bg-white text-ink-muted hover:bg-cream-soft'
+                : 'border-border-warm bg-surface text-ink-muted hover:bg-cream-soft'
             "
             @click="activeCategory = cat.id"
           >
@@ -246,7 +246,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
               :class="
                 activeCategory === cat.id
                   ? 'bg-white/25 text-white'
-                  : 'bg-rose-100 text-chili'
+                  : 'bg-rose-100 text-chili dark:bg-rose-950/70'
               "
             >
               {{ numHanzi(categorySelectedCount(cat.id)) }}
@@ -272,8 +272,8 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
               class="flex items-center justify-between gap-3 rounded-2xl border-[1.5px] px-3 py-2.5 transition"
               :class="[
                 (selectedMap[ing.id] ?? 0) > 0
-                  ? 'border-chili bg-[#fff8f7] shadow-[0_2px_10px_rgba(230,57,70,0.08)]'
-                  : 'cursor-pointer border-border-warm bg-white hover:border-broth hover:bg-[#fffdfb]',
+                  ? 'border-chili bg-surface-active shadow-[0_2px_10px_rgba(230,57,70,0.08)]'
+                  : 'cursor-pointer border-border-warm bg-surface hover:border-broth hover:bg-surface-alt',
               ]"
               @click="handleCardClick(ing.id)"
             >
@@ -295,14 +295,14 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
                   <div v-if="showThai" class="mt-0.5 text-xs text-ink-muted">
                     {{ ing.thai }}
                   </div>
-                  <div v-if="showEnglish" class="text-xs font-medium text-slate-600">
+                  <div v-if="showEnglish" class="text-xs font-medium text-slate-600 dark:text-ink-muted">
                     {{ ing.english }}
                   </div>
                 </div>
               </div>
 
               <div class="flex shrink-0 flex-col items-end gap-1.5" @click.stop>
-                <span class="rounded-xl bg-amber-100 px-2 py-0.5 text-right leading-tight text-amber-800">
+                <span class="rounded-xl bg-amber-100 px-2 py-0.5 text-right leading-tight text-amber-800 dark:bg-amber-900/50 dark:text-amber-200">
                   <span class="block text-[11px] font-extrabold">{{ priceHanzi(ing.price) }}</span>
                   <span v-if="showPinyin" class="block text-[9px] font-semibold text-chili">
                     {{ pricePinyin(ing.price) }}
@@ -323,7 +323,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
 
       <!-- Pinned Footer -->
       <div
-        class="flex shrink-0 flex-col gap-3 border-t border-border-warm bg-white px-5 py-3.5 sm:flex-row sm:items-center sm:justify-between"
+        class="flex shrink-0 flex-col gap-3 border-t border-border-warm bg-surface px-5 py-3.5 sm:flex-row sm:items-center sm:justify-between"
       >
         <div class="min-w-0 leading-snug">
           <LangLabel
@@ -342,7 +342,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
         <div class="flex flex-wrap items-center justify-end gap-2">
           <button
             type="button"
-            class="cursor-pointer rounded-xl border border-border-warm bg-cream-soft px-3.5 py-2 text-left leading-tight text-ink-muted transition hover:bg-orange-100 disabled:cursor-not-allowed disabled:opacity-45"
+            class="cursor-pointer rounded-xl border border-border-warm bg-cream-soft px-3.5 py-2 text-left leading-tight text-ink-muted transition hover:bg-orange-100 disabled:cursor-not-allowed disabled:opacity-45 dark:hover:bg-white/10"
             :disabled="selectedItems.length === 0"
             @click="selectedMap = {}"
           >

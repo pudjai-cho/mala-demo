@@ -132,13 +132,6 @@ export const UI_TEXT = {
     th: 'ครูตั้งโจทย์',
     en: 'Teacher Sets Order',
   },
-  teacherGroupHint: {
-    zh: '手动自选菜品和份数',
-    zhTrad: '手動自選菜品和份數',
-    pinyin: 'Shǒudòng zìxuǎn càipǐn hé fènshù',
-    th: 'เลือกเมนูและจำนวนเองได้ตามต้องการ',
-    en: 'Hand-pick dishes & quantities yourself',
-  },
   customerRole: {
     zh: '顾客',
     zhTrad: '顧客',
@@ -282,6 +275,13 @@ export const UI_TEXT = {
     pinyin: 'Zìjǐ chéngsuàn',
     th: 'คูณและบวกเอง',
     en: 'Multiply & Add',
+  },
+  checkoutGroupHint: {
+    zh: '选择结账与算术练习方式',
+    zhTrad: '選擇結帳與算數練習方式',
+    pinyin: 'Xuǎnzé jiézhàng yǔ suànshù liànxí fāngshì',
+    th: 'เลือกวิธีคิดเงินและฝึกเลขตอนเช็กบิล',
+    en: 'Choose how to practice checkout & math',
   },
   checkoutReadNumberTitle: {
     zh: '读出中文金额，并输入数字！',
@@ -605,5 +605,19 @@ export const UI_TEXT = {
     pinyin: 'Qiēhuàn tú/zì',
     th: 'สลับภาพ/คำ',
     en: 'Swap Pic/Text',
+  },
+  themeDark: {
+    zh: '深色模式',
+    zhTrad: '深色模式',
+    pinyin: 'Shēnsè móshì',
+    th: 'โหมดมืด',
+    en: 'Dark',
+  },
+  themeLight: {
+    zh: '浅色模式',
+    zhTrad: '淺色模式',
+    pinyin: 'Qiǎnsè móshì',
+    th: 'โหมดสว่าง',
+    en: 'Light',
   },
 } as const

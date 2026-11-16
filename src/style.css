@@ -1,9 +1,13 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   --font-sans: "Noto Sans", "Noto Sans Thai", "Segoe UI", "Noto Sans SC", system-ui, -apple-system, sans-serif;
   --color-cream: #fff8f0;
   --color-cream-soft: #fff2e6;
+  --color-surface: #ffffff;
+  --color-surface-alt: #fffaf5;
+  --color-surface-active: #fff8f7;
   --color-border-warm: #f1dec9;
   --color-ink: #2b2118;
   --color-ink-muted: #7a6655;
@@ -14,6 +18,23 @@
   --color-herb-soft: #e6f6f4;
 }
 
+:root.dark {
+  color-scheme: dark;
+  --color-cream: #181311;
+  --color-cream-soft: #29201c;
+  --color-surface: #211a17;
+  --color-surface-alt: #271f1b;
+  --color-surface-active: #362124;
+  --color-border-warm: #42332c;
+  --color-ink: #f7efe8;
+  --color-ink-muted: #bfa999;
+  --color-chili: #ff5c6a;
+  --color-chili-dark: #e63946;
+  --color-broth: #f4a261;
+  --color-herb: #3cc6b5;
+  --color-herb-soft: #173430;
+}
+
 @layer base {
   body {
     margin: 0;
@@ -21,6 +42,11 @@
     font-family: var(--font-sans);
     color: var(--color-ink);
     background: radial-gradient(circle at top left, #fff1e0 0%, var(--color-cream) 50%, #fffaf5 100%);
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  :root.dark body {
+    background: radial-gradient(circle at top left, #2a1c17 0%, var(--color-cream) 55%, #120e0d 100%);
   }
 
   button,

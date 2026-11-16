@@ -26,7 +26,7 @@ const { showPinyin, showThai, showEnglish, cn, cnPinyin, ingName, qtyHanzi, qtyP
 
 <template>
   <aside
-    class="rounded-2xl border-2 border-border-warm bg-white p-4.5 shadow-[0_8px_24px_rgba(105,52,22,0.08)]"
+    class="rounded-2xl border-2 border-border-warm bg-surface p-4.5 shadow-[0_8px_24px_rgba(105,52,22,0.08)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.35)]"
   >
     <div class="flex items-start justify-between gap-2">
       <div>
@@ -42,7 +42,7 @@ const { showPinyin, showThai, showEnglish, cn, cnPinyin, ingName, qtyHanzi, qtyP
         </p>
       </div>
       <div
-        class="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-xl border border-rose-200 bg-rose-50 px-3 py-1.5 text-chili"
+        class="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-xl border border-rose-200 bg-rose-50 px-3 py-1.5 text-chili dark:border-rose-800/70 dark:bg-rose-950/45"
       >
         <div class="text-center leading-none">
           <span class="block text-lg font-black">{{ qtyHanzi(bowlCount) }}</span>
@@ -95,7 +95,7 @@ const { showPinyin, showThai, showEnglish, cn, cnPinyin, ingName, qtyHanzi, qtyP
       <div
         v-for="item in bowl"
         :key="item.ingredientId"
-        class="flex items-center justify-between gap-2 rounded-xl border border-border-warm bg-[#fffaf5] px-2.5 py-2"
+        class="flex items-center justify-between gap-2 rounded-xl border border-border-warm bg-surface-alt px-2.5 py-2"
       >
         <div class="flex items-center gap-2.5">
           <span class="text-2xl">{{ INGREDIENT_MAP[item.ingredientId]?.emoji }}</span>
@@ -117,7 +117,7 @@ const { showPinyin, showThai, showEnglish, cn, cnPinyin, ingName, qtyHanzi, qtyP
     <div class="flex gap-2.5">
       <button
         type="button"
-        class="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-border-warm bg-cream-soft px-3.5 py-2.5 text-center font-bold text-ink-muted transition hover:bg-orange-100 disabled:cursor-not-allowed disabled:opacity-45"
+        class="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-border-warm bg-cream-soft px-3.5 py-2.5 text-center font-bold text-ink-muted transition hover:bg-orange-100 disabled:cursor-not-allowed disabled:opacity-45 dark:hover:bg-white/10"
         :disabled="bowl.length === 0"
         @click="emit('clear')"
       >

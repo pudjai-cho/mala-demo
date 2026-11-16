@@ -61,21 +61,21 @@ const isPerfect = computed(() =>
 function statusMeta(status: OrderComparisonItem['status']) {
   if (status === 'match') {
     return {
-      rowClass: 'border-green-300 bg-white',
-      pillClass: 'bg-green-100 text-green-800',
+      rowClass: 'border-green-300 bg-surface dark:border-green-800/70',
+      pillClass: 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-200',
       entry: UI_TEXT.statusMatch,
     }
   }
   if (status === 'missing') {
     return {
-      rowClass: 'border-red-300 bg-red-50',
-      pillClass: 'bg-red-100 text-red-800',
+      rowClass: 'border-red-300 bg-red-50 dark:border-red-800/70 dark:bg-red-950/35',
+      pillClass: 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-200',
       entry: UI_TEXT.statusMissing,
     }
   }
   return {
-    rowClass: 'border-amber-300 bg-amber-50',
-    pillClass: 'bg-amber-100 text-amber-800',
+    rowClass: 'border-amber-300 bg-amber-50 dark:border-amber-800/70 dark:bg-amber-950/35',
+    pillClass: 'bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-200',
     entry: status === 'extra' ? UI_TEXT.statusExtra : UI_TEXT.statusPartial,
   }
 }
@@ -83,14 +83,14 @@ function statusMeta(status: OrderComparisonItem['status']) {
 
 <template>
   <section
-    class="rounded-2xl border-2 border-border-warm bg-white p-5 shadow-[0_8px_24px_rgba(105,52,22,0.08)]"
+    class="rounded-2xl border-2 border-border-warm bg-surface p-5 shadow-[0_8px_24px_rgba(105,52,22,0.08)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.35)]"
   >
     <div
       class="mb-4 flex items-center gap-3.5 rounded-2xl border-2 px-4.5 py-3.5"
       :class="
         isPerfect
-          ? 'animate-celebrate border-emerald-400 bg-emerald-50'
-          : 'border-orange-300 bg-orange-50'
+          ? 'animate-celebrate border-emerald-400 bg-emerald-50 dark:border-emerald-700/80 dark:bg-emerald-950/35'
+          : 'border-orange-300 bg-orange-50 dark:border-orange-800/70 dark:bg-orange-950/35'
       "
     >
       <div class="text-4xl" :class="{ 'animate-bounce-star': isPerfect }">
@@ -115,7 +115,7 @@ function statusMeta(status: OrderComparisonItem['status']) {
 
     <div class="grid grid-cols-1 gap-4 md:grid-cols-[1.2fr_1fr]">
       <!-- Order vs Served comparison -->
-      <div class="flex flex-col gap-3 rounded-2xl border-[1.5px] border-border-warm bg-[#fffaf5] p-4">
+      <div class="flex flex-col gap-3 rounded-2xl border-[1.5px] border-border-warm bg-surface-alt p-4">
         <h3 class="m-0 text-base font-extrabold">
           <LangLabel
             :entry="UI_TEXT.compareTitle"
@@ -168,7 +168,7 @@ function statusMeta(status: OrderComparisonItem['status']) {
       </div>
 
       <!-- Price & Chinese Number Reading -->
-      <div class="flex flex-col gap-3 rounded-2xl border-[1.5px] border-border-warm bg-[#fffaf5] p-4">
+      <div class="flex flex-col gap-3 rounded-2xl border-[1.5px] border-border-warm bg-surface-alt p-4">
         <h3 class="m-0 text-base font-extrabold">
           <LangLabel
             :entry="UI_TEXT.priceCheckTitle"
@@ -183,14 +183,14 @@ function statusMeta(status: OrderComparisonItem['status']) {
         >
           <div
             v-if="!isAutoCheckout"
-            class="flex flex-col gap-0.5 rounded-xl border border-border-warm bg-white px-3 py-2.5"
+            class="flex flex-col gap-0.5 rounded-xl border border-border-warm bg-surface px-3 py-2.5"
           >
             <span class="text-xs font-bold text-ink-muted">
               <LangLabel :entry="UI_TEXT.yourAnswer" sub-class="text-[10px] font-medium opacity-80" />
             </span>
             <strong
               class="text-xl font-extrabold"
-              :class="isPriceCorrect ? 'text-green-700' : 'text-red-600'"
+              :class="isPriceCorrect ? 'text-green-700 dark:text-green-400' : 'text-red-600 dark:text-red-400'"
             >
               {{ priceHanzi(enteredPrice ?? 0) }} {{ isPriceCorrect ? '✅' : '❌' }}
             </strong>
@@ -198,7 +198,7 @@ function statusMeta(status: OrderComparisonItem['status']) {
               {{ pricePinyin(enteredPrice ?? 0) }}
             </span>
           </div>
-          <div class="flex flex-col gap-0.5 rounded-xl border border-border-warm bg-white px-3 py-2.5">
+          <div class="flex flex-col gap-0.5 rounded-xl border border-border-warm bg-surface px-3 py-2.5">
             <span class="text-xs font-bold text-ink-muted">
               <LangLabel :entry="UI_TEXT.actualTotal" sub-class="text-[10px] font-medium opacity-80" />
             </span>
@@ -209,8 +209,8 @@ function statusMeta(status: OrderComparisonItem['status']) {
           </div>
         </div>
 
-        <div class="rounded-2xl border-[1.5px] border-amber-300 bg-amber-100 p-3.5 text-center">
-          <div class="text-xs font-bold text-amber-800">
+        <div class="rounded-2xl border-[1.5px] border-amber-300 bg-amber-100 p-3.5 text-center dark:border-amber-700/70 dark:bg-amber-950/45">
+          <div class="text-xs font-bold text-amber-800 dark:text-amber-200">
             <LangLabel :entry="UI_TEXT.readingLabel" sub-class="mt-0.5 text-[11px] font-medium opacity-80" />
           </div>
           <div class="mt-1 text-3xl font-black text-ink">一共 {{ totalHanziDisplay }}</div>
@@ -220,7 +220,7 @@ function statusMeta(status: OrderComparisonItem['status']) {
           <div class="mt-2 flex flex-wrap gap-2">
             <button
               type="button"
-              class="flex-1 cursor-pointer rounded-xl border-[1.5px] border-amber-500 bg-white px-3 py-2 text-sm font-bold text-amber-900 transition hover:bg-amber-50"
+              class="flex-1 cursor-pointer rounded-xl border-[1.5px] border-amber-500 bg-surface px-3 py-2 text-sm font-bold text-amber-900 transition hover:bg-amber-50 dark:border-amber-600 dark:text-amber-200 dark:hover:bg-amber-900/40"
               @click="emit('speakTotal', 'zh')"
             >
               🔊 “一共{{ totalHanziDisplay }}”
@@ -228,7 +228,7 @@ function statusMeta(status: OrderComparisonItem['status']) {
             <button
               v-if="showThai"
               type="button"
-              class="cursor-pointer rounded-xl border-[1.5px] border-amber-500 bg-white px-3 py-2 text-sm font-bold text-amber-900 transition hover:bg-amber-50"
+              class="cursor-pointer rounded-xl border-[1.5px] border-amber-500 bg-surface px-3 py-2 text-sm font-bold text-amber-900 transition hover:bg-amber-50 dark:border-amber-600 dark:text-amber-200 dark:hover:bg-amber-900/40"
               @click="emit('speakTotal', 'th')"
             >
               🔊 ไทย
@@ -236,7 +236,7 @@ function statusMeta(status: OrderComparisonItem['status']) {
             <button
               v-if="showEnglish"
               type="button"
-              class="cursor-pointer rounded-xl border-[1.5px] border-amber-500 bg-white px-3 py-2 text-sm font-bold text-amber-900 transition hover:bg-amber-50"
+              class="cursor-pointer rounded-xl border-[1.5px] border-amber-500 bg-surface px-3 py-2 text-sm font-bold text-amber-900 transition hover:bg-amber-50 dark:border-amber-600 dark:text-amber-200 dark:hover:bg-amber-900/40"
               @click="emit('speakTotal', 'en')"
             >
               🔊 EN

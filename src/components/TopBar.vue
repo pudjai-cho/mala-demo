@@ -2,8 +2,9 @@
 import { computed } from 'vue'
 import LangLabel from '@/components/ui/LangLabel.vue'
 import { useI18nContext } from '@/composables/useI18n'
+import { useTheme } from '@/composables/useTheme'
 import { UI_TEXT } from '@/data/uiText'
-import type { CheckoutMode, Difficulty, OrderMode } from '@/types/game'
+import type { CheckoutMode, Difficulty } from '@/types/game'
 import { speechState } from '@/utils/speech'
 
 defineProps<{
@@ -12,13 +13,11 @@ defineProps<{
   roundNumber: number
 }>()
 
-const orderMode = defineModel<OrderMode>('orderMode', { required: true })
 const checkoutMode = defineModel<CheckoutMode>('checkoutMode', { required: true })
 const difficulty = defineModel<Difficulty>('difficulty', { required: true })
 
 const emit = defineEmits<{
   newRandom: []
-  openTeacherModal: []
 }>()
 
 const {
@@ -37,11 +36,12 @@ const {
 } = useI18nContext()
 
 const subtitleLine = computed(() => extraLines(UI_TEXT.appTitle).join(' · ') || '\u00A0')
+const { themeMode, toggleTheme } = useTheme()
 </script>
 
 <template>
   <header
-    class="flex flex-col gap-3 rounded-2xl border-2 border-border-warm bg-white px-5 py-4 shadow-[0_8px_24px_rgba(105,52,22,0.08)]"
+    class="flex flex-col gap-3 rounded-2xl border-2 border-border-warm bg-surface px-5 py-4 shadow-[0_8px_24px_rgba(105,52,22,0.08)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.35)]"
   >
     <!-- Line 1: Brand + Round / Score -->
     <div
@@ -77,7 +77,7 @@ const subtitleLine = computed(() => extraLines(UI_TEXT.appTitle).join(' · ') ||
             sub-class="mt-0.5 text-[10px] font-medium opacity-80"
           />
         </span>
-        <span class="rounded-xl bg-amber-100 px-3 py-1.5 text-xs font-bold text-amber-800">
+        <span class="rounded-xl bg-amber-100 px-3 py-1.5 text-xs font-bold text-amber-800 dark:bg-amber-900/45 dark:text-amber-200">
           <LangLabel
             :entry="UI_TEXT.starsLabel"
             :prefix="`⭐ ${numHanzi(stars)} / ${numHanzi(answeredCount)} `"
@@ -85,6 +85,19 @@ const subtitleLine = computed(() => extraLines(UI_TEXT.appTitle).join(' · ') ||
             sub-class="mt-0.5 text-[10px] font-medium opacity-80"
           />
         </span>
+        <button
+          type="button"
+          class="cursor-pointer rounded-xl border border-border-warm bg-cream-soft px-3 py-1.5 text-left text-ink transition hover:bg-orange-100 dark:hover:bg-white/10"
+          :aria-label="themeMode === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'"
+          @click="toggleTheme"
+        >
+          <LangLabel
+            :entry="themeMode === 'dark' ? UI_TEXT.themeLight : UI_TEXT.themeDark"
+            :prefix="themeMode === 'dark' ? '☀️ ' : '🌙 '"
+            main-class="text-xs font-bold"
+            sub-class="mt-0.5 text-[10px] font-medium opacity-80"
+          />
+        </button>
       </div>
     </div>
 
@@ -102,7 +115,7 @@ const subtitleLine = computed(() => extraLines(UI_TEXT.appTitle).join(' · ') ||
           class="cursor-pointer rounded-lg px-3 py-1.5 text-center leading-tight transition"
           :class="
             cnScript === 'simplified'
-              ? 'bg-white text-chili shadow-sm'
+              ? 'bg-surface text-chili shadow-sm'
               : 'text-ink-muted hover:text-ink'
           "
           @click="cnScript = 'simplified'"
@@ -115,7 +128,7 @@ const subtitleLine = computed(() => extraLines(UI_TEXT.appTitle).join(' · ') ||
           class="cursor-pointer rounded-lg px-3 py-1.5 text-center leading-tight transition"
           :class="
             cnScript === 'traditional'
-              ? 'bg-white text-chili shadow-sm'
+              ? 'bg-surface text-chili shadow-sm'
               : 'text-ink-muted hover:text-ink'
           "
           @click="cnScript = 'traditional'"
@@ -140,7 +153,7 @@ const subtitleLine = computed(() => extraLines(UI_TEXT.appTitle).join(' · ') ||
           class="cursor-pointer rounded-lg px-2.5 py-1 text-left leading-tight transition"
           :class="
             numberStyle === opt.id
-              ? 'bg-white text-chili shadow-sm'
+              ? 'bg-surface text-chili shadow-sm'
               : 'text-ink-muted hover:text-ink'
           "
           @click="numberStyle = opt.id"
@@ -159,8 +172,8 @@ const subtitleLine = computed(() => extraLines(UI_TEXT.appTitle).join(' · ') ||
           class="cursor-pointer rounded-full border-[1.5px] px-3 py-1.5 text-xs font-semibold transition"
           :class="
             showPinyin
-              ? 'border-herb bg-herb-soft text-teal-800'
-              : 'border-border-warm bg-white text-ink-muted hover:bg-cream-soft'
+              ? 'border-herb bg-herb-soft text-teal-800 dark:text-teal-200'
+              : 'border-border-warm bg-surface text-ink-muted hover:bg-cream-soft'
           "
           @click="showPinyin = !showPinyin"
         >
@@ -171,8 +184,8 @@ const subtitleLine = computed(() => extraLines(UI_TEXT.appTitle).join(' · ') ||
           class="cursor-pointer rounded-full border-[1.5px] px-3 py-1.5 text-xs font-semibold transition"
           :class="
             showThai
-              ? 'border-herb bg-herb-soft text-teal-800'
-              : 'border-border-warm bg-white text-ink-muted hover:bg-cream-soft'
+              ? 'border-herb bg-herb-soft text-teal-800 dark:text-teal-200'
+              : 'border-border-warm bg-surface text-ink-muted hover:bg-cream-soft'
           "
           @click="showThai = !showThai"
         >
@@ -183,8 +196,8 @@ const subtitleLine = computed(() => extraLines(UI_TEXT.appTitle).join(' · ') ||
           class="cursor-pointer rounded-full border-[1.5px] px-3 py-1.5 text-xs font-semibold transition"
           :class="
             showEnglish
-              ? 'border-herb bg-herb-soft text-teal-800'
-              : 'border-border-warm bg-white text-ink-muted hover:bg-cream-soft'
+              ? 'border-herb bg-herb-soft text-teal-800 dark:text-teal-200'
+              : 'border-border-warm bg-surface text-ink-muted hover:bg-cream-soft'
           "
           @click="showEnglish = !showEnglish"
         >
@@ -195,7 +208,7 @@ const subtitleLine = computed(() => extraLines(UI_TEXT.appTitle).join(' · ') ||
       <select
         v-if="speechState.zhVoices.length > 0"
         v-model="speechState.selectedZhVoiceURI"
-        class="max-w-[230px] rounded-full border-[1.5px] border-border-warm bg-white px-3 py-1.5 text-xs font-semibold text-ink"
+        class="max-w-[230px] rounded-full border-[1.5px] border-border-warm bg-surface px-3 py-1.5 text-xs font-semibold text-ink"
         aria-label="Chinese TTS voice"
       >
         <option value="">
@@ -207,98 +220,24 @@ const subtitleLine = computed(() => extraLines(UI_TEXT.appTitle).join(' · ') ||
       </select>
     </div>
 
-    <!-- Line 3: Order Mode & Checkout / Math Mode -->
-    <div class="flex min-h-10 flex-wrap items-center justify-between gap-3">
-      <div
-        class="inline-flex flex-wrap gap-1 rounded-xl border border-border-warm bg-cream-soft p-1"
-        role="group"
-      >
-        <button
-          type="button"
-          class="cursor-pointer rounded-lg px-3.5 py-1.5 text-left transition"
-          :class="
-            orderMode === 'reading'
-              ? 'bg-white text-chili shadow-sm'
-              : 'text-ink-muted hover:text-ink'
-          "
-          @click="orderMode = 'reading'"
-        >
-          <LangLabel
-            :entry="UI_TEXT.modeReading"
-            prefix="👀 "
-            main-class="text-sm font-semibold"
-            sub-class="mt-0.5 text-[10px] font-medium opacity-80"
-          />
-        </button>
-        <button
-          type="button"
-          class="cursor-pointer rounded-lg px-3.5 py-1.5 text-left transition"
-          :class="
-            orderMode === 'listening'
-              ? 'bg-white text-chili shadow-sm'
-              : 'text-ink-muted hover:text-ink'
-          "
-          @click="orderMode = 'listening'"
-        >
-          <LangLabel
-            :entry="UI_TEXT.modeListening"
-            prefix="👂 "
-            main-class="text-sm font-semibold"
-            sub-class="mt-0.5 text-[10px] font-medium opacity-80"
-          />
-        </button>
-      </div>
-
-      <div
-        class="inline-flex flex-wrap gap-1 rounded-xl border border-border-warm bg-cream-soft p-1"
-        role="group"
-        aria-label="Checkout mode"
-      >
-        <button
-          v-for="opt in [
-            { id: 'auto' as const, icon: '🔊', text: UI_TEXT.checkoutModeAuto },
-            { id: 'read_number' as const, icon: '🔢', text: UI_TEXT.checkoutModeReadNumber },
-            { id: 'calc_subtotals' as const, icon: '➕', text: UI_TEXT.checkoutModeCalcSubtotals },
-            { id: 'calc_manual' as const, icon: '✖️', text: UI_TEXT.checkoutModeCalcManual },
-          ]"
-          :key="opt.id"
-          type="button"
-          class="cursor-pointer rounded-lg px-2.5 py-1.5 text-left leading-tight transition"
-          :class="
-            checkoutMode === opt.id
-              ? 'bg-white text-chili shadow-sm'
-              : 'text-ink-muted hover:text-ink'
-          "
-          @click="checkoutMode = opt.id"
-        >
-          <LangLabel
-            :entry="opt.text"
-            :prefix="`${opt.icon} `"
-            main-class="text-xs font-bold"
-            sub-class="mt-0.5 text-[10px] font-medium opacity-80"
-          />
-        </button>
-      </div>
-    </div>
-
-    <!-- Line 4: New Order Controls (Random by Difficulty vs Teacher Custom) -->
+    <!-- Line 3: Random Order & Checkout / Math Mode -->
     <div class="flex flex-wrap items-stretch justify-between gap-3">
       <div
-        class="flex flex-col justify-between gap-2 rounded-2xl border-[1.5px] border-amber-200 bg-amber-50/55 px-3 py-2"
+        class="flex flex-col justify-between gap-2 rounded-2xl border-[1.5px] border-amber-200 bg-amber-50/55 px-3 py-2 dark:border-amber-800/60 dark:bg-amber-950/30"
       >
-        <div class="text-xs font-bold text-amber-900">
+        <div class="text-xs font-bold text-amber-900 dark:text-amber-200">
           <LangLabel
             :entry="UI_TEXT.randomGroupHint"
             prefix="🎲 "
             main-class="text-xs font-extrabold"
             pinyin-class="mt-0.5 text-[10px] font-semibold text-chili"
-            sub-class="mt-0.5 text-[10px] font-medium text-amber-800/80"
+            sub-class="mt-0.5 text-[10px] font-medium text-amber-800/80 dark:text-amber-300/80"
           />
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
           <div
-            class="inline-flex flex-wrap gap-1 rounded-xl bg-amber-100/70 p-1"
+            class="inline-flex flex-wrap gap-1 rounded-xl bg-amber-100/70 p-1 dark:bg-amber-950/55"
             role="group"
             aria-label="Difficulty"
           >
@@ -328,7 +267,7 @@ const subtitleLine = computed(() => extraLines(UI_TEXT.appTitle).join(' · ') ||
               class="cursor-pointer rounded-lg px-2.5 py-1.5 text-left leading-tight transition"
               :class="
                 difficulty === opt.id
-                  ? 'bg-white text-chili shadow-sm'
+                  ? 'bg-surface text-chili shadow-sm'
                   : 'text-ink-muted hover:text-ink'
               "
               @click="difficulty = opt.id"
@@ -345,7 +284,7 @@ const subtitleLine = computed(() => extraLines(UI_TEXT.appTitle).join(' · ') ||
 
           <button
             type="button"
-            class="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border-[1.5px] border-amber-300 bg-amber-100 px-3.5 py-2 text-left text-amber-900 shadow-xs transition hover:bg-amber-200 active:scale-[0.98]"
+            class="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border-[1.5px] border-amber-300 bg-amber-100 px-3.5 py-2 text-left text-amber-900 shadow-xs transition hover:bg-amber-200 active:scale-[0.98] dark:border-amber-700 dark:bg-amber-900/60 dark:text-amber-100 dark:hover:bg-amber-800/70"
             @click="emit('newRandom')"
           >
             <LangLabel
@@ -359,30 +298,48 @@ const subtitleLine = computed(() => extraLines(UI_TEXT.appTitle).join(' · ') ||
       </div>
 
       <div
-        class="flex flex-col justify-between gap-2 rounded-2xl border-[1.5px] border-violet-200 bg-violet-50/55 px-3 py-2"
+        class="flex flex-col justify-between gap-2 rounded-2xl border-[1.5px] border-border-warm bg-surface-alt px-3 py-2"
       >
-        <div class="text-xs font-bold text-violet-900">
+        <div class="text-xs font-bold text-ink">
           <LangLabel
-            :entry="UI_TEXT.teacherGroupHint"
-            prefix="👩‍🏫 "
+            :entry="UI_TEXT.checkoutGroupHint"
+            prefix="🧮 "
             main-class="text-xs font-extrabold"
             pinyin-class="mt-0.5 text-[10px] font-semibold text-chili"
-            sub-class="mt-0.5 text-[10px] font-medium text-violet-800/80"
+            sub-class="mt-0.5 text-[10px] font-medium text-ink-muted"
           />
         </div>
 
-        <button
-          type="button"
-          class="inline-flex cursor-pointer items-center gap-1.5 self-start rounded-xl border-[1.5px] border-violet-300 bg-violet-100 px-3.5 py-2 text-left text-violet-800 transition hover:bg-violet-200 active:scale-[0.98]"
-          @click="emit('openTeacherModal')"
+        <div
+          class="inline-flex flex-wrap gap-1 rounded-xl border border-border-warm bg-cream-soft p-1"
+          role="group"
+          aria-label="Checkout mode"
         >
-          <LangLabel
-            :entry="UI_TEXT.teacherCustom"
-            prefix="👩‍🏫 "
-            main-class="text-sm font-bold"
-            sub-class="mt-0.5 text-[10px] font-medium opacity-80"
-          />
-        </button>
+          <button
+            v-for="opt in [
+              { id: 'auto' as const, icon: '🔊', text: UI_TEXT.checkoutModeAuto },
+              { id: 'read_number' as const, icon: '🔢', text: UI_TEXT.checkoutModeReadNumber },
+              { id: 'calc_subtotals' as const, icon: '➕', text: UI_TEXT.checkoutModeCalcSubtotals },
+              { id: 'calc_manual' as const, icon: '✖️', text: UI_TEXT.checkoutModeCalcManual },
+            ]"
+            :key="opt.id"
+            type="button"
+            class="cursor-pointer rounded-lg px-2.5 py-1.5 text-left leading-tight transition"
+            :class="
+              checkoutMode === opt.id
+                ? 'bg-surface text-chili shadow-sm'
+                : 'text-ink-muted hover:text-ink'
+            "
+            @click="checkoutMode = opt.id"
+          >
+            <LangLabel
+              :entry="opt.text"
+              :prefix="`${opt.icon} `"
+              main-class="text-xs font-bold"
+              sub-class="mt-0.5 text-[10px] font-medium opacity-80"
+            />
+          </button>
+        </div>
       </div>
     </div>
   </header>

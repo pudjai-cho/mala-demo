@@ -26,7 +26,7 @@ export const CATEGORIES: IngredientCategory[] = [
     thai: 'ผัก',
     english: 'Vegetables',
     color: '#2A9D8F',
-    sectionClass: 'border-teal-200/80 bg-teal-50/55',
+    sectionClass: 'border-teal-200/80 bg-teal-50/55 dark:border-teal-800/70 dark:bg-teal-950/35',
   },
   {
     id: 'meat',
@@ -36,7 +36,7 @@ export const CATEGORIES: IngredientCategory[] = [
     thai: 'เนื้อสัตว์',
     english: 'Meats',
     color: '#E63946',
-    sectionClass: 'border-rose-200/80 bg-rose-50/55',
+    sectionClass: 'border-rose-200/80 bg-rose-50/55 dark:border-rose-800/70 dark:bg-rose-950/35',
   },
   {
     id: 'seafood',
@@ -46,7 +46,7 @@ export const CATEGORIES: IngredientCategory[] = [
     thai: 'อาหารทะเล',
     english: 'Seafood',
     color: '#0284C7',
-    sectionClass: 'border-sky-200/80 bg-sky-50/55',
+    sectionClass: 'border-sky-200/80 bg-sky-50/55 dark:border-sky-800/70 dark:bg-sky-950/35',
   },
   {
     id: 'tofu_noodle',
@@ -56,7 +56,7 @@ export const CATEGORIES: IngredientCategory[] = [
     thai: 'เต้าหู้ ไข่ & เส้น',
     english: 'Tofu, Egg & Noodles',
     color: '#E76F51',
-    sectionClass: 'border-amber-200/80 bg-amber-50/60',
+    sectionClass: 'border-amber-200/80 bg-amber-50/60 dark:border-amber-800/70 dark:bg-amber-950/35',
   },
 ]
 
