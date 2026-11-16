@@ -111,30 +111,25 @@ const { themeMode, toggleTheme } = useTheme()
         aria-label="Chinese script"
       >
         <button
+          v-for="opt in [
+            { id: 'simplified' as const, text: UI_TEXT.scriptSimplified },
+            { id: 'traditional' as const, text: UI_TEXT.scriptTraditional },
+          ]"
+          :key="opt.id"
           type="button"
-          class="cursor-pointer rounded-lg px-3 py-1.5 text-center leading-tight transition"
+          class="cursor-pointer rounded-lg px-3 py-1 text-left leading-tight transition"
           :class="
-            cnScript === 'simplified'
+            cnScript === opt.id
               ? 'bg-surface text-chili shadow-sm'
               : 'text-ink-muted hover:text-ink'
           "
-          @click="cnScript = 'simplified'"
+          @click="cnScript = opt.id"
         >
-          <div class="text-sm font-semibold">简体</div>
-          <div v-if="showPinyin" class="text-[10px] font-semibold text-chili">Jiǎntǐ</div>
-        </button>
-        <button
-          type="button"
-          class="cursor-pointer rounded-lg px-3 py-1.5 text-center leading-tight transition"
-          :class="
-            cnScript === 'traditional'
-              ? 'bg-surface text-chili shadow-sm'
-              : 'text-ink-muted hover:text-ink'
-          "
-          @click="cnScript = 'traditional'"
-        >
-          <div class="text-sm font-semibold">繁體</div>
-          <div v-if="showPinyin" class="text-[10px] font-semibold text-chili">Fántǐ</div>
+          <LangLabel
+            :entry="opt.text"
+            main-class="text-sm font-semibold"
+            sub-class="mt-0.5 text-[10px] font-medium opacity-80"
+          />
         </button>
       </div>
 

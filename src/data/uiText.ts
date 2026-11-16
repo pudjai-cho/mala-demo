@@ -34,6 +34,20 @@ export const UI_TEXT = {
     th: 'ร้านหม่าล่าทั่งน้อย',
     en: 'Malatang Little Shop',
   },
+  scriptSimplified: {
+    zh: '简体',
+    zhTrad: '简体',
+    pinyin: 'Jiǎntǐ',
+    th: 'จีนตัวย่อ',
+    en: 'Simplified',
+  },
+  scriptTraditional: {
+    zh: '繁體',
+    zhTrad: '繁體',
+    pinyin: 'Fántǐ',
+    th: 'จีนตัวเต็ม',
+    en: 'Traditional',
+  },
   roundLabel: {
     zh: '第 {n} 轮',
     zhTrad: '第 {n} 輪',

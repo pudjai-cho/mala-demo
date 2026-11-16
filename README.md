@@ -6,14 +6,16 @@ An interactive **Malatang POS & Mandarin learning game** built with Vue 3, TypeS
 
 ## ✨ Features
 
-### 1. Script, Numerals & Language Controls
-- **Simplified & Traditional Chinese (`简体` / `繁體`)**: Switches all UI copy, ingredient names (e.g. `土豆` / `馬鈴薯`, `西兰花` / `青花菜`, `粉丝` / `冬粉`), Pinyin variants (`tǔdòu` / `mǎlíngshǔ`), and Chinese TTS locale (`zh-CN` / `zh-TW`).
+### 1. Script, Numerals, Theme & Language Controls
+- **Simplified & Traditional Chinese (`简体` / `繁體`)**: Switches all UI copy, ingredient names (e.g. `土豆` / `馬鈴薯`, `西兰花` / `青花菜`, `粉丝` / `冬粉`), Pinyin variants (`tǔdòu` / `mǎlíngshǔ`), and Chinese TTS locale (`zh-CN` / `zh-TW`), while each script toggle button also supports Pinyin, Thai, and English labels.
 - **Chinese Numeral Styles (`小寫 · 一二三` vs `大寫 · 壹貳參`)**:
   - **Normal**: `零 一 二(两/兩) 三 四 五 六 七 八 九 十 百`
   - **Formal / Financial**: `零 壹 贰/貳 叁/參 肆 伍 陆/陸 柒 捌 玖 拾 佰`
   - Applied consistently across prices, quantities, round/score counters, calculator keys, totals, and difficulty labels—with no Arabic digits shown in the UI.
 - **Global Helper Toggles (`+ Pinyin`, `+ ไทย`, `+ English`)**:
   - Adds tone-marked Pinyin (`Noto Sans` font stack for centered macrons) and/or Thai and English translations on separate lines underneath Chinese labels via `<LangLabel>`.
+- **Light & Dark Theme (`useTheme.ts`)**:
+  - Toggle between light and dark themes in `TopBar.vue`, persisted to `localStorage` via `mala-demo:v1:theme` and styled with `.dark` CSS tokens across all views.
 - **Independent Order Ticket Languages (`點餐語言`)**:
   - The customer order cards have their own **`中文`**, **`+ Pinyin`**, **`+ ไทย`**, and **`+ English`** toggles (independent of the top bar). Students can hide Chinese on the customer's order and view only Thai, English, or Pinyin so they must recall the Chinese vocabulary when selecting items from the menu.
 
@@ -25,12 +27,12 @@ Cycle how the **Customer Order** and **Order Menu** display information:
 - **`兩邊只看文字` (Text in Both)**: Pictures hidden in both areas for pure reading practice.
 
 ### 3. Order Modes, Grouping & Teacher Controls
-- **Order Modes**:
-  - **`👀 看菜單` (View Menu)**: Customer's order cards are visible on screen.
-  - **`👂 聽老師說` (Listen to Teacher)**: Order cards are hidden behind a listening prompt; includes **`👁️ 偷看小抄` (Peek Note)** to reveal/hide the order.
-- **Order Creation Cards (`TopBar.vue`)**:
+- **Customer Header Controls (`CustomerTicket.vue`)**:
+  - **Order Modes (`👀 看菜單` vs `👂 聽老師說`)**: Switch right beside the customer badge between visible order cards or hidden listening mode (with **`👁️ 偷看小抄` (Peek Note)** to toggle visibility).
+  - **Teacher Sets Order (`👩‍🏫 老師出題`)**: Inline action button in the customer header opening the custom modal to hand-pick specific ingredients, quantities (1–9), and the starting order mode (`listening` or `reading`).
+- **Grouped Top Bar Controls (`TopBar.vue`)**:
   - **Random by Difficulty**: Grouped card combining the difficulty selector (`簡單` 2–3, `中等` 3–4, `挑戰` 4–5 items) and `🎲 隨機點餐` button with a short multilingual hint.
-  - **Teacher Sets Order (`👩‍🏫 老師出題`)**: Dedicated card opening a custom modal to hand-pick specific ingredients, quantities (1–9), and the starting order mode (`listening` or `reading`).
+  - **Checkout & Math Modes**: Grouped card with a short multilingual hint wrapping the 4 checkout/arithmetic practice modes.
 - **Menu Grouping & Quick Decrement (`IngredientTray.vue`)**:
   - Toggle **`🗂️ 分類顯示`** between a flat menu grid or 4 color-coded category sections (`蔬菜`, `肉類`, `海鮮`, `豆蛋麵`) in a compact 3-row desktop layout.
   - Selected menu cards display an inline `[ − | count ]` badge in the top-right corner so quantities can be subtracted directly on the menu as well as in the Customer Order panel.
@@ -111,15 +113,16 @@ src/
 ├── composables/
 │   ├── useI18n.ts                    # Script, number style, language toggles & formatting helpers
 │   ├── useMalaGame.ts                # Core game state, scoring, order generation & TTS triggers
-│   └── usePersistedRef.ts            # Validated localStorage-backed reactive refs
+│   ├── usePersistedRef.ts            # Validated localStorage-backed reactive refs
+│   └── useTheme.ts                   # Light/dark theme state & root class toggling
 ├── utils/
 │   ├── chineseNumbers.ts             # Normal & Formal Mandarin number/price/quantity converters
 │   ├── speech.ts                     # Web Speech API wrapper & voice scoring
 │   └── sfx.ts                        # Web Audio API feedback chimes
 └── components/
-    ├── TopBar.vue                    # Header, language/script/numeral/mode controls
+    ├── TopBar.vue                    # Header, theme, language/script/numeral, random & checkout controls
     ├── TtsWarningBanner.vue          # Missing Chinese TTS voice alert
-    ├── CustomerTicket.vue            # Customer persona, greeting, TTS controls & order cards
+    ├── CustomerTicket.vue            # Customer persona, orderMode toggle, teacher modal trigger, TTS & order cards
     ├── IngredientTray.vue            # Interactive POS order menu with category grouping
     ├── MalaBowl.vue                  # Current customer order panel & serve trigger
     ├── CheckoutView.vue              # Receipt & Chinese-numeral keypad
